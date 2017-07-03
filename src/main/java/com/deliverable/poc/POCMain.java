@@ -21,16 +21,15 @@ import com.deliverable.poc.dao.TicketDAO;
 public class POCMain {
 	
 	public static void main(String[] args) {
-//		runPOCMain();
-		testAllOpen();		
-		testSortedPriority();
+		runPOCMain();
+//		testAllOpen();		
+//		testSortedPriority();
 	}
 	
 	public static void runPOCMain() {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
 				"spring-module.xml");
-//		 TicketDAO ticketDAO = context.getBean(TicketDAO.class);
-//		 pocCustomTickets(ticketDAO);
+//		 pocCustomTickets(context);
 		 pocCriteria(context);
 		context.close();
 	}
@@ -48,8 +47,16 @@ public class POCMain {
 					 	.add(Restrictions.ne("st.value", "Closed"))
 					 .createAlias("priority", "pr")
 					 	.addOrder(Order.desc("pr.weight"))
+					 	.addOrder(Order.asc("dateCreated"))
 			 		.list();
-			 pocTickets(tickets);			 
+//			 Instead of using pocTickets(), use a test method
+//			 pocTickets(tickets);
+			 if (areNotClosed(tickets)) {
+				 System.out.println("No tickets are closed");
+			 }
+			 if (isOrderedByHighMedLowDateCreated(tickets)) {
+				 System.out.println("All tickets ordered by H, M, L, None, then by Date Created");
+			 }
 			 tx.commit();			 
 		 } catch (HibernateException e) {
 			 if (tx != null) tx.rollback();
@@ -63,7 +70,8 @@ public class POCMain {
 		pocTickets(ticketDAO.list());
 	}
 	
-	public static void pocCustomTickets(TicketDAO ticketDAO) {
+	public static void pocCustomTickets(ClassPathXmlApplicationContext context) {
+		TicketDAO ticketDAO = context.getBean(TicketDAO.class);
 		// Select open tickets, order by H,M,L priority, then order by date created
 		// Create JUnit tests:
 		//	areNotClosed?
@@ -131,19 +139,19 @@ public class POCMain {
 		
 		t1.setPriority(high);
 		Calendar t1Cal = Calendar.getInstance();
-		t1Cal.add(Calendar.MONTH, -1);
+		t1Cal.add(Calendar.MONTH, -3);
 		Date t1DateCreated = t1Cal.getTime();
 		t1.setDateCreated(t1DateCreated);
 		
-		t2.setPriority(none);
+		t2.setPriority(high);
 		Calendar t2Cal = Calendar.getInstance();
-		t2Cal.add(Calendar.MONTH, -1);
+		t2Cal.add(Calendar.MONTH, -2);
 		Date t2DateCreated = t2Cal.getTime();
 		t2.setDateCreated(t2DateCreated);
 		
-		t3.setPriority(high);
+		t3.setPriority(none);
 		Calendar t3Cal = Calendar.getInstance();
-		t3Cal.add(Calendar.MONTH, -1);
+		t3Cal.add(Calendar.MONTH, -4);
 		Date t3DateCreated = t3Cal.getTime();
 		t3.setDateCreated(t3DateCreated);
 		
