@@ -13,7 +13,7 @@
 
 # eclipse #
 ###########
-.settings/**
+.settings
 
 # Target class folder #
 #######################
