@@ -1,0 +1,4 @@
+com\deliverable\model\Ticket.class
+com\deliverable\poc\dao\TicketDAO.class
+com\deliverable\poc\POCMain.class
+com\deliverable\poc\dao\TicketDAOImpl.class
