@@ -21,42 +21,45 @@ import com.deliverable.poc.dao.TicketDAO;
 public class POCMain {
 	
 	public static void main(String[] args) {
-		runPOCMain();
-//		testAllOpen();		
-//		testSortedPriority();
-	}
-	
-	public static void runPOCMain() {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
 				"spring-module.xml");
-//		 pocCustomTickets(context);
-		 pocCriteria(context);
+		pocGetAllTickets(context);
+		
+		// Test the test methods:
+//		testAllOpen();		
+//		testSortedPriority();
+		
 		context.close();
 	}
 	
+	public static void pocGetAllTickets(ClassPathXmlApplicationContext context) {		
+//		List<Ticket> tickets = getTicketsUsingHQL(context);
+		List<Ticket> tickets = getTicketsUsingHCriteria(context);
+		
+		if (areNotClosed(tickets)) {
+			 System.out.println("No tickets are closed");
+		 }
+		 if (isOrderedByHighMedLowDateCreated(tickets)) {
+			 System.out.println("All tickets ordered by H, M, L, None, then by Date Created");
+		 }
+		
+	}
+	
 	@SuppressWarnings("unchecked")
-	public static void pocCriteria(ClassPathXmlApplicationContext context) {
-		 SessionFactory sessionFactory = (SessionFactory) context.getBean("hibernate3AnnotatedSessionFactory");
+	public static List<Ticket> getTicketsUsingHCriteria(ClassPathXmlApplicationContext context) {
+		List<Ticket> tickets = null;
+		 SessionFactory sessionFactory = (SessionFactory) context.getBean("sessionFactory");
 		 Session session = sessionFactory.openSession();
-		 Transaction tx = null;
-		 
+		 Transaction tx = null;		 
 		 try {
 			 tx = session.beginTransaction();
-			 List<Ticket> tickets = session.createCriteria(Ticket.class)
+			 tickets = session.createCriteria(Ticket.class)
 					 .createAlias("status", "st")
 					 	.add(Restrictions.ne("st.value", "Closed"))
 					 .createAlias("priority", "pr")
 					 	.addOrder(Order.desc("pr.weight"))
 					 	.addOrder(Order.asc("dateCreated"))
 			 		.list();
-//			 Instead of using pocTickets(), use a test method
-//			 pocTickets(tickets);
-			 if (areNotClosed(tickets)) {
-				 System.out.println("No tickets are closed");
-			 }
-			 if (isOrderedByHighMedLowDateCreated(tickets)) {
-				 System.out.println("All tickets ordered by H, M, L, None, then by Date Created");
-			 }
 			 tx.commit();			 
 		 } catch (HibernateException e) {
 			 if (tx != null) tx.rollback();
@@ -64,20 +67,17 @@ public class POCMain {
 		 } finally {
 			 session.close();
 		 }
+		 return tickets;
 	}
 	
-	public static void pocAllTickets(TicketDAO ticketDAO) {
-		pocTickets(ticketDAO.list());
-	}
-	
-	public static void pocCustomTickets(ClassPathXmlApplicationContext context) {
+	public static List<Ticket> getTicketsUsingHQL(ClassPathXmlApplicationContext context) {
 		TicketDAO ticketDAO = context.getBean(TicketDAO.class);
 		// Select open tickets, order by H,M,L priority, then order by date created
 		// Create JUnit tests:
 		//	areNotClosed?
 		//	isOrderedByHighMedLowDateCreated?
 		String hqlQuery = "from Ticket tick where tick.status.value != 'Closed' order by tick.priority.weight desc, tick.dateCreated";
-		pocTickets(ticketDAO.list(hqlQuery));
+		return ticketDAO.list(hqlQuery);
 	}
 	
 	public static void pocTickets(List<Ticket> tickets) {
