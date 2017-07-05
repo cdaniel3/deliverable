@@ -14,10 +14,10 @@
         	<value>jdbc:mysql://localhost:3306/deliverable_db?useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</value>
         </property>
     </bean>
-
-	<bean id="hibernate3AnnotatedSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="annotatedClasses">
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+	    <property name="dataSource" ref="dataSource"/>
+	    <property name="annotatedClasses">
 			<list>
 				<value>com.deliverable.model.Ticket</value>
 				<value>com.deliverable.model.TicketType</value>
@@ -34,36 +34,12 @@
 		</property>
 	</bean>
 	
-	<bean id="ticketDAO" class="com.deliverable.poc.dao.TicketDAOImpl">
-		<property name="sessionFactory" ref="hibernate3AnnotatedSessionFactory" />
-	</bean>
-	
-	<!-- May use Spring's transaction manager instead of managing transactions manually as in POCMain.pocCriteria()
-		ex. http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#transaction-motivation
-		
-	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-    	<property name="dataSource" ref="dataSource"/>
-	</bean>
-	
-	or, for Hibernate:
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-	    <property name="dataSource" ref="dataSource"/>
-	    <property name="mappingResources">
-	        <list>
-	            <value>org/springframework/samples/petclinic/hibernate/petclinic.hbm.xml</value>
-	        </list>
-	    </property>
-	    <property name="hibernateProperties">
-	        <value>
-	            hibernate.dialect=${hibernate.dialect}
-	        </value>
-	    </property>
-	</bean>
-	
 	<bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
     	<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
-	^^Would need to use Hibernate5 instead of 3
-	-->
+	
+	<bean id="ticketDAO" class="com.deliverable.poc.dao.TicketDAOImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 	
 </beans>
