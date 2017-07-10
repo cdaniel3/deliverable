@@ -11,42 +11,61 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.deliverable.AppConfig;
 import com.deliverable.model.Priority;
 import com.deliverable.model.Status;
 import com.deliverable.model.Ticket;
 import com.deliverable.poc.dao.TicketDAO;
+import com.deliverable.repositories.TicketRepository;
 
 public class POCMain {
 	
 	public static void main(String[] args) {
-		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+		ClassPathXmlApplicationContext xmlContext = new ClassPathXmlApplicationContext(
 				"spring-module.xml");
-		pocGetAllTickets(context);
+		AnnotationConfigApplicationContext annotationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 		
-		// Test the test methods:
-//		testAllOpen();		
-//		testSortedPriority();
+		List<Ticket> ticketsHQL = getTicketsUsingHQL(xmlContext);
+		testTickets(ticketsHQL);
 		
-		context.close();
+		List<Ticket> ticketsCriteria = getTicketsUsingHCriteria(xmlContext);
+		testTickets(ticketsCriteria);
+		
+		
+		List<Ticket> ticketsRepository = getTicketsUsingRepository(annotationContext);
+		testTickets(ticketsRepository);
+		
+		xmlContext.close();
+		annotationContext.close();
 	}
 	
-	public static void pocGetAllTickets(ClassPathXmlApplicationContext context) {		
-//		List<Ticket> tickets = getTicketsUsingHQL(context);
-		List<Ticket> tickets = getTicketsUsingHCriteria(context);
+	public static void testTickets(List<Ticket> tickets) {		
 		
+		// TODO replace w/ junit
 		if (areNotClosed(tickets)) {
 			 System.out.println("No tickets are closed");
-		 }
-		 if (isOrderedByHighMedLowDateCreated(tickets)) {
-			 System.out.println("All tickets ordered by H, M, L, None, then by Date Created");
-		 }
+		} else {
+			System.out.println("ONE OR MORE TICKETS ARE CLOSED");
+		}
+		if (isOrderedByHighMedLowDateCreated(tickets)) {
+			System.out.println("All tickets ordered by H, M, L, None, then by Date Created");
+		} else {
+			System.out.println("TICKETS AREN'T ORDERED BY H, M, L, None, then by Date Created");
+		}
 		
+	}
+	
+	public static List<Ticket> getTicketsUsingRepository(ApplicationContext context) {
+		TicketRepository repo = context.getBean(TicketRepository.class);
+		return repo.findAll();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<Ticket> getTicketsUsingHCriteria(ClassPathXmlApplicationContext context) {
+	public static List<Ticket> getTicketsUsingHCriteria(ApplicationContext context) {
 		List<Ticket> tickets = null;
 		 SessionFactory sessionFactory = (SessionFactory) context.getBean("sessionFactory");
 		 Session session = sessionFactory.openSession();
@@ -70,7 +89,7 @@ public class POCMain {
 		 return tickets;
 	}
 	
-	public static List<Ticket> getTicketsUsingHQL(ClassPathXmlApplicationContext context) {
+	public static List<Ticket> getTicketsUsingHQL(ApplicationContext context) {
 		TicketDAO ticketDAO = context.getBean(TicketDAO.class);
 		// Select open tickets, order by H,M,L priority, then order by date created
 		// Create JUnit tests:
@@ -80,32 +99,7 @@ public class POCMain {
 		return ticketDAO.list(hqlQuery);
 	}
 	
-	public static void pocTickets(List<Ticket> tickets) {
-//		 Will have to test writing to TICKETS table when Ticket Dao can support all of the needed fields
-//		 Ticket ticket = new Ticket();		 
-		boolean isAllOpen = true;
-		
-		for (Ticket t : tickets) {			 
-			 System.out.println("Ticket name: " + t.getName());
-//			 System.out.println("\tDescription: " + t.getDescription());
-			 System.out.println("\tDate Created: " + t.getDateCreated());
-			 System.out.println("\tType: " + t.getTicketType().getName());
-			 Priority p = t.getPriority();
-			 if (p != null) {
-				 System.out.println("\tPriority value: " + p.getValue());
-			 }
-			 System.out.println("\tStatus: " + t.getStatus());
-			 if (isAllOpen) {
-				 if (t.getStatus().equals("Closed")) {
-					 isAllOpen = false;
-				 }
-			 }
-		 }
-		
-		 System.out.println("All open? " + isAllOpen);
-		 
-	}
-	
+	// Testing areNotClosed() with dummy data
 	public static void testAllOpen() {		
 		Status status = new Status();
 		status.setValue("Open");
@@ -123,6 +117,7 @@ public class POCMain {
 		}
 	}
 	
+	// testing isOrderedByHighMedLowDateCreated() with dummy data
 	public static void testSortedPriority() {
 		Priority high = new Priority();
 		high.setWeight(250);
