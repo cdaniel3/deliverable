@@ -61,7 +61,32 @@ public class POCMain {
 	
 	public static List<Ticket> getTicketsUsingRepository(ApplicationContext context) {
 		TicketRepository repo = context.getBean(TicketRepository.class);
-		return repo.findAll();
+		
+//		// By name
+//		List<Ticket> ticketsByName = repo.findTicketByName("TEST20TEST");
+//		System.out.println("Ticket 20 name: " + ticketsByName.get(0).getName());
+//		
+//		// By description
+//		List<Ticket> ticketsByDescr = repo.findTicketByDescription("normal descr");
+//		for (Ticket t : ticketsByDescr) {
+//			System.out.println(t.getName() + " - " + t.getDescription());
+//		}
+//		
+//		// By High priority
+//		List<Ticket> ticketsByPriority = repo.findTicketByPriorityValue("High");
+//		for (Ticket t : ticketsByPriority) {
+//			System.out.println(t.getName() + " - " + t.getPriority().getValue());
+//		}
+//		
+//		// By High priority and Not Closed
+//		List<Ticket> ticketsByPriorityAndStatus = 
+//				repo.findTicketByPriorityValueAndStatusValueNot("High", "Closed");
+//		for (Ticket t : ticketsByPriorityAndStatus) {
+//			System.out.println(t.getName() + " - " + t.getStatus());
+//		}
+		
+		// By Not Closed, ordered by high, medium, low, and then Date Created
+		return repo.findTicketByStatusValueNotOrderByPriorityWeightDescDateCreated("Closed");		
 	}
 	
 	@SuppressWarnings("unchecked")
