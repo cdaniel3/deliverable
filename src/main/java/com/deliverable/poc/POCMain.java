@@ -32,20 +32,20 @@ public class POCMain {
 		ClassPathXmlApplicationContext xmlContext = new ClassPathXmlApplicationContext(
 				"spring-module.xml");
 		AnnotationConfigApplicationContext annotationContext = new AnnotationConfigApplicationContext(AppConfig.class);
-					
-		List<Ticket> ticketsHQL = getTicketsUsingHQL(xmlContext);
+		
+		TicketDAO ticketDAO = xmlContext.getBean(TicketDAO.class);
+		List<Ticket> ticketsHQL = getTicketsUsingHQL(ticketDAO);
 		testTickets(ticketsHQL);
 		
-		List<Ticket> ticketsCriteria = getTicketsUsingHCriteria(xmlContext);
+		SessionFactory sessionFactory = (SessionFactory) xmlContext.getBean("sessionFactory");
+		List<Ticket> ticketsCriteria = getTicketsUsingHCriteria(sessionFactory);
 		testTickets(ticketsCriteria);
 		
-		
-		List<Ticket> ticketsRepository = getTicketsUsingRepository(annotationContext);
+		TicketRepository ticketRepo = annotationContext.getBean(TicketRepository.class);
+		List<Ticket> ticketsRepository = getTicketsUsingRepository(ticketRepo);
 		testTickets(ticketsRepository);
 		
-		
-		TicketRepository repo = annotationContext.getBean(TicketRepository.class);
-		List<Ticket> tickets = repo.findTicketByNameIs("TEST0TEST");
+		List<Ticket> tickets = ticketRepo.findTicketByNameIs("TEST0TEST");
 		System.out.println(tickets.size());		
 		
 		xmlContext.close();
@@ -68,9 +68,7 @@ public class POCMain {
 		
 	}
 	
-	public static List<Ticket> getTicketsUsingRepository(ApplicationContext context) {
-		TicketRepository repo = context.getBean(TicketRepository.class);
-		
+	public static List<Ticket> getTicketsUsingRepository(TicketRepository repo) {
 //		// By name
 //		List<Ticket> ticketsByName = repo.findTicketByName("TEST20TEST");
 //		System.out.println("Ticket 20 name: " + ticketsByName.get(0).getName());
@@ -99,9 +97,8 @@ public class POCMain {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static List<Ticket> getTicketsUsingHCriteria(ApplicationContext context) {
-		List<Ticket> tickets = null;
-		 SessionFactory sessionFactory = (SessionFactory) context.getBean("sessionFactory");
+	public static List<Ticket> getTicketsUsingHCriteria(SessionFactory sessionFactory) {
+		List<Ticket> tickets = null;		 
 		 Session session = sessionFactory.openSession();
 		 Transaction tx = null;		 
 		 try {
@@ -123,8 +120,7 @@ public class POCMain {
 		 return tickets;
 	}
 	
-	public static List<Ticket> getTicketsUsingHQL(ApplicationContext context) {
-		TicketDAO ticketDAO = context.getBean(TicketDAO.class);
+	public static List<Ticket> getTicketsUsingHQL(TicketDAO ticketDAO) {		
 		// Select open tickets, order by H,M,L priority, then order by date created
 		// Create JUnit tests:
 		//	areNotClosed?
