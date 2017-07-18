@@ -3,6 +3,7 @@ package com.deliverable.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.deliverable.model.Ticket;
 
@@ -25,5 +26,10 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 	public List<Ticket> findTicketByPriorityValueAndStatusValueNot(String priorityValue, String statusValue);
 	
 	public List<Ticket> findTicketByStatusValueNotOrderByPriorityWeightDescDateCreated(String statusValue);
+	
+	// example of using named query
+	public List<Ticket> findTicketByNameIs(@Param("name") String name);
+	
+	
 	
 }

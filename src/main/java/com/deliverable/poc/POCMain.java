@@ -5,6 +5,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,6 +17,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import com.deliverable.AppConfig;
 import com.deliverable.model.Priority;
@@ -28,7 +32,7 @@ public class POCMain {
 		ClassPathXmlApplicationContext xmlContext = new ClassPathXmlApplicationContext(
 				"spring-module.xml");
 		AnnotationConfigApplicationContext annotationContext = new AnnotationConfigApplicationContext(AppConfig.class);
-		
+					
 		List<Ticket> ticketsHQL = getTicketsUsingHQL(xmlContext);
 		testTickets(ticketsHQL);
 		
@@ -38,6 +42,11 @@ public class POCMain {
 		
 		List<Ticket> ticketsRepository = getTicketsUsingRepository(annotationContext);
 		testTickets(ticketsRepository);
+		
+		
+		TicketRepository repo = annotationContext.getBean(TicketRepository.class);
+		List<Ticket> tickets = repo.findTicketByNameIs("TEST0TEST");
+		System.out.println(tickets.size());		
 		
 		xmlContext.close();
 		annotationContext.close();

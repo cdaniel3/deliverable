@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -16,6 +17,8 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="TICKETS")
+@NamedQuery(name = "Ticket.findByNameIs",
+		query = "SELECT t FROM Ticket t WHERE t.name = :name")
 public class Ticket {
 
 	@Id
