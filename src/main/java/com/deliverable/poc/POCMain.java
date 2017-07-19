@@ -5,19 +5,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import com.deliverable.AppConfig;
 import com.deliverable.model.Priority;
@@ -25,6 +20,7 @@ import com.deliverable.model.Status;
 import com.deliverable.model.Ticket;
 import com.deliverable.poc.dao.TicketDAO;
 import com.deliverable.repositories.TicketRepository;
+import static org.junit.Assert.assertTrue;
 
 public class POCMain {
 	
@@ -52,46 +48,16 @@ public class POCMain {
 		annotationContext.close();
 	}
 	
-	public static void testTickets(List<Ticket> tickets) {		
-		
-		// TODO replace w/ junit
-		if (areNotClosed(tickets)) {
-			 System.out.println("No tickets are closed");
-		} else {
-			System.out.println("ONE OR MORE TICKETS ARE CLOSED");
-		}
-		if (isOrderedByHighMedLowDateCreated(tickets)) {
-			System.out.println("All tickets ordered by H, M, L, None, then by Date Created");
-		} else {
-			System.out.println("TICKETS AREN'T ORDERED BY H, M, L, None, then by Date Created");
-		}
-		
+	public static void testTickets(List<Ticket> tickets) {	
+		testTicketsUsingJUnit(tickets);
 	}
 	
-	public static List<Ticket> getTicketsUsingRepository(TicketRepository repo) {
-//		// By name
-//		List<Ticket> ticketsByName = repo.findTicketByName("TEST20TEST");
-//		System.out.println("Ticket 20 name: " + ticketsByName.get(0).getName());
-//		
-//		// By description
-//		List<Ticket> ticketsByDescr = repo.findTicketByDescription("normal descr");
-//		for (Ticket t : ticketsByDescr) {
-//			System.out.println(t.getName() + " - " + t.getDescription());
-//		}
-//		
-//		// By High priority
-//		List<Ticket> ticketsByPriority = repo.findTicketByPriorityValue("High");
-//		for (Ticket t : ticketsByPriority) {
-//			System.out.println(t.getName() + " - " + t.getPriority().getValue());
-//		}
-//		
-//		// By High priority and Not Closed
-//		List<Ticket> ticketsByPriorityAndStatus = 
-//				repo.findTicketByPriorityValueAndStatusValueNot("High", "Closed");
-//		for (Ticket t : ticketsByPriorityAndStatus) {
-//			System.out.println(t.getName() + " - " + t.getStatus());
-//		}
-		
+	public static void testTicketsUsingJUnit(List<Ticket> tickets) {
+		assertTrue(areNotClosed(tickets));
+		assertTrue(isOrderedByHighMedLowDateCreated(tickets));		
+	}
+	
+	public static List<Ticket> getTicketsUsingRepository(TicketRepository repo) {		
 		// By Not Closed, ordered by high, medium, low, and then Date Created
 		return repo.findTicketByStatusValueNotOrderByPriorityWeightDescDateCreated("Closed");		
 	}
