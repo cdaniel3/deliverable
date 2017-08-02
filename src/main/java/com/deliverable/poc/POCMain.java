@@ -159,7 +159,8 @@ public class POCMain {
 	public static boolean areNotClosed(List<Ticket> tickets) {
 		boolean areNotClosed = true;
 		for (Ticket t : tickets) {
-			if (t.getStatus().equals("Closed")) {
+			Status status = t.getStatus();
+			if (status != null && status.getValue().equals("Closed")) {
 				areNotClosed = false;
 				break;
 			}

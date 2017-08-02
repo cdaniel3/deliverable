@@ -92,10 +92,9 @@ public class Ticket {
 	public void setPriority(Priority priority) {
 		this.priority = priority;
 	}
-
-	// POC'ing to see if the get() method can be used to hide the status object from the client. All that is returned would be the status value string.
-	public String getStatus() {
-		return status != null ? status.getValue() : null;
+	
+	public Status getStatus() {
+		return status;
 	}
 
 	public void setStatus(Status status) {

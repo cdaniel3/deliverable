@@ -15,6 +15,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.deliverable.AppConfig;
+import com.deliverable.model.Status;
 import com.deliverable.model.Ticket;
 import com.deliverable.poc.dao.TicketDAO;
 import com.deliverable.repositories.TicketRepository;
@@ -97,7 +98,8 @@ public class POCTestCase extends TestCase {
 	public static boolean areNotClosed(List<Ticket> tickets) {
 		boolean areNotClosed = true;
 		for (Ticket t : tickets) {
-			if (t.getStatus().equals("Closed")) {
+			Status status = t.getStatus();
+			if (status != null && status.getValue().equals("Closed")) {
 				areNotClosed = false;
 				break;
 			}
