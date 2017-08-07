@@ -4,7 +4,7 @@
     <!-- Maven POM version -->
 	<modelVersion>4.0.0</modelVersion>
     <groupId>com.deliverable</groupId>
-    <artifactId>cd-deliverable</artifactId>
+    <artifactId>deliverable</artifactId>
     <packaging>war</packaging>
     <version>0.1.0</version>
 
@@ -142,6 +142,7 @@
 			        <version>3.1.0</version>
 			        <configuration>
 			          <outputDirectory>C:\Users\cdani\apache-tomcat-9.0.0.M22\webapps</outputDirectory>
+			          <warName>deliverable</warName>
 			        </configuration>
 			      </plugin>
             </plugins>
