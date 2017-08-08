@@ -7,7 +7,9 @@ import org.springframework.data.repository.query.Param;
 
 import com.deliverable.model.Ticket;
 
-public interface TicketRepository extends JpaRepository<Ticket, Long> {
+public interface TicketRepository extends JpaRepository<Ticket, Integer> {
+	
+	public Ticket findTicketById(Integer id);
 
 	public List<Ticket> findTicketByName(String name);
 	

@@ -1,6 +1,7 @@
 package com.deliverable.test;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -30,6 +31,19 @@ public class TicketRepositoryTest {
 //		assertFalse(areNotClosed(tickets)); //should fail
 		assertTrue(areNotClosed(tickets));
 		assertTrue(isOrderedByHighMedLowDateCreated(tickets));
+	}
+	
+	@Test
+	public void testFindTicket() {		
+		Integer ticketIdInteger = new Integer(1);
+		Ticket ticketInteger = getTicketRepository().findTicketById(ticketIdInteger);
+		assertEquals("TEST0TEST", ticketInteger.getName());
+		
+		Ticket ticketNull = getTicketRepository().findTicketById(null);
+		assertNull(ticketNull);
+		
+		Ticket ticketNotFound = getTicketRepository().findTicketById(-1);
+		assertNull(ticketNotFound);
 	}
 	
 	public static boolean areNotClosed(List<Ticket> tickets) {
