@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.deliverable.model.Ticket;
 
-public interface TicketRepository extends JpaRepository<Ticket, Integer> {
+public interface TicketRepository extends JpaRepository<Ticket, Integer>, TicketRepositoryBase {
 	
 	public Ticket findTicketById(Integer id);
 
@@ -30,8 +30,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 	public List<Ticket> findTicketByStatusValueNotOrderByPriorityWeightDescDateCreated(String statusValue);
 	
 	// example of using named query
-	public List<Ticket> findTicketByNameIs(@Param("name") String name);
-	
+	public List<Ticket> findTicketByNameIs(@Param("name") String name);	
 	
 	
 }

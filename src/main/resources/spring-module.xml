@@ -12,7 +12,7 @@
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
-		<property name="username" value="deliv_read"/>
+		<property name="username" value="deliv_write"/>
         <property name="password" value="password"/>
         <property name="url">
         	<!-- Raspberry Pi mysql server -->

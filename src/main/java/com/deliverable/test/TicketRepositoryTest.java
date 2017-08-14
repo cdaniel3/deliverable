@@ -1,8 +1,7 @@
 package com.deliverable.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.util.Date;
 import java.util.List;
@@ -10,6 +9,8 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -44,6 +45,85 @@ public class TicketRepositoryTest {
 		
 		Ticket ticketNotFound = getTicketRepository().findTicketById(-1);
 		assertNull(ticketNotFound);
+	}
+	
+	@Test
+	public void testSavePartialTicket() {
+		Ticket ticketToUpdate = getTicketRepository().findTicketById(2);
+		String priorityValue = ticketToUpdate.getPriority().getValue();
+		
+		System.out.println("Previous name: " + ticketToUpdate.getName());
+		String newName = "test 2 test new";
+//		Ticket ticket = new Ticket();
+//		ticket.setId(2);
+//		ticket.setName(newName);
+//		
+		ticketToUpdate.setName(newName);
+		
+		try {
+			getTicketRepository().updateTicket(ticketToUpdate);
+		} catch (BadSqlGrammarException e) {
+			System.out.println(e.getSql());
+		}
+		Ticket foundT = getTicketRepository().findTicketById(2);
+		assertEquals("Ticket (partial update) doesn't have new name after update", newName, foundT.getName());
+		assertNotNull("Ticket (partial update) has null priority after update", foundT.getPriority());
+		assertEquals(priorityValue, foundT.getPriority().getValue());
+	}
+	
+	private int getNewValueSuffix() {
+		return (int) (Math.random()*1000);
+	}
+	
+	@Test
+	public void testUpdateTicketName() {
+		Integer id = 2;
+		Ticket ticket = getTicketRepository().findTicketById(id);
+		String oldName = ticket.getName();
+		String newName = "tick-" + getNewValueSuffix();		
+		try {
+			getTicketRepository().updateTicketName(id, newName);
+		} catch (BadSqlGrammarException e) {
+			System.out.println(e.getSql());
+		}
+		Ticket foundT = getTicketRepository().findTicketById(id);
+		assertEquals("Ticket (partial update) doesn't have new name after update", newName, foundT.getName());
+		assertThat("New ticket name is equal to old name, but shouldn't be", newName, not(oldName));
+	}
+	
+	@Test
+	public void testUpdateTicketNameToBlank() {
+		Integer id = 2;
+		getTicketRepository().updateTicketName(id, "");
+		Ticket foundT = getTicketRepository().findTicketById(id);
+		String newName = foundT.getName();
+		assertThat(newName, not(""));
+	}
+	
+	@Test
+	public void testUpdateTicketLongName() {
+		Integer id = 2;
+		String longName = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab";
+		try {
+			getTicketRepository().updateTicketName(id, longName);
+		} catch (BadSqlGrammarException e) {
+			System.out.println(e.getSql());
+		} catch (DataIntegrityViolationException e) {
+			assertTrue(true);
+			System.out.println(e.getMessage());
+		}
+		
+		String name64Chars = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab";
+		try {
+			getTicketRepository().updateTicketName(id, name64Chars);
+		} catch (BadSqlGrammarException e) {
+			System.out.println(e.getSql());
+		} catch (DataIntegrityViolationException e) {
+			System.out.println(e.getMessage());
+		}
+		Ticket foundT = getTicketRepository().findTicketById(id);
+		assertEquals("Ticket (partial update) doesn't have new name after update", name64Chars, foundT.getName());
+		
 	}
 	
 	public static boolean areNotClosed(List<Ticket> tickets) {

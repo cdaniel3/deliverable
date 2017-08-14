@@ -23,7 +23,7 @@ public class AppConfig {
 		BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 		dataSource.setUrl("jdbc:mysql://localhost:3306/deliverable_db?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
-		dataSource.setUsername("deliv_read");
+		dataSource.setUsername("deliv_write");
 		dataSource.setPassword("password");
 		return dataSource;
 	}
