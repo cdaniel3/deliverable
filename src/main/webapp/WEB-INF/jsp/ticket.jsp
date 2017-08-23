@@ -13,4 +13,8 @@
 	Date Created: <fmt:formatDate pattern="MM/dd/yyyy" value="${ticket.dateCreated}" />
 </div>
 </div>
+<form method="POST" action="/deliverable/tickets/${ticket.id}/name">
+Ticket Name: <input type="text" name="name"/><br/>
+<input type="submit" value="Update Ticket"/>
+</form>
 </html>

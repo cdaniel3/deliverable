@@ -24,11 +24,9 @@ public class TicketRepositoryImpl implements TicketRepositoryBase {
 
 	@Override
 	public void updateTicketName(Integer ticketId, String newName) {
-		if (ticketId != null && newName != null && !newName.equals("")) {
+		if (ticketId != null && newName != null && !newName.trim().equals("")) {
 			if (newName.length() <= TICKET_NAME_MAX_LENGTH) {
 				getJdbcTemplate().update("UPDATE TICKETS SET NAME = ? WHERE TICKET_ID = ?", newName, ticketId);
-			} else {
-				throw new DataIntegrityViolationException("Ticket name cannot exceed " + TICKET_NAME_MAX_LENGTH + " characters");
 			}
 		}
 	}
