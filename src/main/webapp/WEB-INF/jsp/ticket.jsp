@@ -2,6 +2,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <html>
+Back to <a href="/deliverable/tickets">View Tickets</a>
 <div id="ticket">
 <div>${ticket.ticketType.name}</div>
 <div> id: ${ticket.id}</div>
@@ -14,7 +15,12 @@
 </div>
 </div>
 <form method="POST" action="/deliverable/tickets/${ticket.id}/name">
-Ticket Name: <input type="text" name="name"/><br/>
+New name: <input type="text" name="name"/>
 <input type="submit" value="Update Ticket"/>
 </form>
+<form method="POST" action="/deliverable/tickets/${ticket.id}/priority">
+New priority: <input type="text" name="priority"/>
+<input type="submit" value="Update Priority"/>
+</form>
+
 </html>
