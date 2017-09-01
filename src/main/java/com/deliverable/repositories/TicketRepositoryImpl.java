@@ -3,24 +3,13 @@ package com.deliverable.repositories;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import com.deliverable.model.Ticket;
 
 public class TicketRepositoryImpl implements TicketRepositoryBase {
 	
 	private JdbcTemplate jdbcTemplate;
 	
 	private static final int TICKET_NAME_MAX_LENGTH = 64;
-
-	@Override
-	/**
-	 * Not crazy about passing in a Ticket object just to update the name field
-	 */
-	public void updateTicket(Ticket ticket) {
-		getJdbcTemplate().update("UPDATE TICKETS SET NAME = ? WHERE TICKET_ID = ?", ticket.getName(), ticket.getId());
-	}
 
 	@Override
 	public void updateTicketName(Integer ticketId, String newName) {
@@ -31,6 +20,22 @@ public class TicketRepositoryImpl implements TicketRepositoryBase {
 		}
 	}
 
+	@Override
+	public void updateTicketDescription(Integer ticketId, String newDescription) {
+		if (ticketId != null && newDescription != null) {
+			getJdbcTemplate().update("UPDATE TICKETS SET DESCRIPTION = ? WHERE TICKET_ID = ?", newDescription, ticketId);
+		}
+		
+	}
+
+	@Override
+	public void updateTicketPriority(Integer ticketId, Integer priorityId) {
+		if (ticketId != null && priorityId != null) {
+			getJdbcTemplate().update("UPDATE TICKETS SET PRIORITY_ID = ? WHERE TICKET_ID = ?", priorityId, ticketId);
+		}
+		
+	}
+
 	public JdbcTemplate getJdbcTemplate() {
 		return jdbcTemplate;
 	}
@@ -39,7 +44,5 @@ public class TicketRepositoryImpl implements TicketRepositoryBase {
 	public void setJdbcTemplate(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
-
-	
 	
 }

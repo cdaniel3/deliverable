@@ -14,6 +14,8 @@ Back to <a href="/deliverable/tickets">View Tickets</a>
 	Date Created: <fmt:formatDate pattern="MM/dd/yyyy" value="${ticket.dateCreated}" />
 </div>
 </div>
+
+<!-- todo remove
 <form method="POST" action="/deliverable/tickets/${ticket.id}/name">
 New name: <input type="text" name="name"/>
 <input type="submit" value="Update Ticket"/>
@@ -22,5 +24,6 @@ New name: <input type="text" name="name"/>
 New priority: <input type="text" name="priority"/>
 <input type="submit" value="Update Priority"/>
 </form>
+-->
 
 </html>

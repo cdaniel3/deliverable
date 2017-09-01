@@ -1,9 +1,10 @@
 package com.deliverable.repositories;
 
-import com.deliverable.model.Ticket;
-
 public interface TicketRepositoryBase {
-	public void updateTicket(Ticket ticket);
 
 	public void updateTicketName(Integer ticketId, String newName);
+	
+	public void updateTicketDescription(Integer ticketId, String newDescription);
+	
+	public void updateTicketPriority(Integer ticketId, Integer priorityId);
 }
