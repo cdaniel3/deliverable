@@ -37,7 +37,7 @@
 <c:forEach items="${tickets}" var="ticket">
 <tr>
 <td>${ticket.id}</td>
-<td><a href="/deliverable/tickets/${ticket.id}">${ticket.ticketType.name}</a></td>
+<td><a href="/deliverable/viewTickets/${ticket.id}">${ticket.ticketType.name}</a></td>
 <td>${ticket.priority.value}</td>
 <td>${ticket.name}</td>
 <td>${ticket.status.value}</td>

@@ -2,7 +2,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <html>
-Back to <a href="/deliverable/tickets">View Tickets</a>
+Back to <a href="/deliverable/viewTickets">View Tickets</a>
 <div id="ticket">
 <div>${ticket.ticketType.name}</div>
 <div> id: ${ticket.id}</div>

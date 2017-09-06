@@ -1,5 +1,7 @@
 package com.deliverable.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +19,11 @@ public class TicketRESTController {
 
 	@Autowired
 	private TicketService ticketService;
+	
+	@RequestMapping(method=RequestMethod.GET)
+	public List<Ticket> getTicketsInProgress() {
+		return getTicketService().getUnresolvedTickets();
+	}
 	
 	/**
 	 * Err on the side of less messaging / info sent back to the view, as opposed to a ton of error handling; 

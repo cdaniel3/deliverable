@@ -13,7 +13,7 @@ import com.deliverable.model.Ticket;
 import com.deliverable.service.TicketService;
 
 @Controller
-@RequestMapping("/tickets")
+@RequestMapping("/viewTickets")
 public class TicketController {
 	
 	@Autowired
