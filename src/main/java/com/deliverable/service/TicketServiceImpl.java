@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.deliverable.model.Priority;
 import com.deliverable.model.Ticket;
+import com.deliverable.model.Transition;
 import com.deliverable.repositories.PriorityRepository;
 import com.deliverable.repositories.TicketRepository;
 
@@ -46,6 +47,10 @@ public class TicketServiceImpl implements TicketService {
 		if (nonePriority != null) {
 			updateTicketPriority(ticketId, nonePriority.getId());
 		}
+	}
+	
+	public List<Transition> getTransitions(Integer ticketTypeId, Integer originStatusId) {
+		return getTicketRepository().getTransitions(ticketTypeId, originStatusId);
 	}
 	
 	public TicketRepository getTicketRepository() {

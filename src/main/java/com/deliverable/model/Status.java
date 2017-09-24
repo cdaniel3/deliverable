@@ -15,6 +15,13 @@ public class Status {
 
 	@Column(name="NAME")
 	private String value;
+	
+	public Status() {}
+	
+	public Status(int id, String value) {
+		this.id = id;
+		this.value = value;
+	}
 
 	public String getValue() {
 		return value;

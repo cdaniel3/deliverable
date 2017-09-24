@@ -25,6 +25,11 @@ public class TicketRESTController {
 		return getTicketService().getUnresolvedTickets();
 	}
 	
+	@RequestMapping(method=RequestMethod.POST, value="/{ticketId}")
+	public Ticket getTicket(@PathVariable Integer ticketId) {
+		return getTicketService().getTicket(ticketId);
+	}
+	
 	/**
 	 * Err on the side of less messaging / info sent back to the view, as opposed to a ton of error handling; 
 	 * The view shouldn't allow for invalid ticket ids since the ids should derive from the page itself.
