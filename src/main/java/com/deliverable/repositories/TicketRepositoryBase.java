@@ -13,4 +13,6 @@ public interface TicketRepositoryBase {
 	public void updateTicketPriority(Integer ticketId, Integer priorityId);
 	
 	public List<Transition> getTransitions(Integer ticketTypeId, Integer originStatusId);
+	
+	public void updateTicketStatus(Integer ticketId, Integer statusId);
 }

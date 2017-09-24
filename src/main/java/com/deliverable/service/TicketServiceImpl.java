@@ -53,6 +53,30 @@ public class TicketServiceImpl implements TicketService {
 		return getTicketRepository().getTransitions(ticketTypeId, originStatusId);
 	}
 	
+	@Override
+	public void updateTicketStatus(Integer ticketId, Integer statusId) {
+		// First check if status is an allowed status
+		Ticket ticket = getTicketRepository().findTicketById(ticketId);
+		if (ticket != null && statusId != null) {
+			List<Transition> transitions = getTransitions(ticket.getTicketType().getId(), ticket.getStatus().getId());
+			if (transitions != null) {
+				boolean isStatusAllowed = false;
+				for (Transition transition : transitions) {
+					if (transition.getDestinationStatus().getId() == statusId) {
+						isStatusAllowed = true;
+						break;
+					}
+				}
+				if (isStatusAllowed) {
+					getTicketRepository().updateTicketStatus(ticketId, statusId);
+				}
+				// TODO else throw new TicketException() so that the REST controller can handle appropriately
+				// should be able to incorporate spring exceptions into REST controller
+			}
+		}
+		
+	}
+
 	public TicketRepository getTicketRepository() {
 		return ticketRepository;
 	}

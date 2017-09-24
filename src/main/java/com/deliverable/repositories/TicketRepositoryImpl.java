@@ -60,6 +60,13 @@ public class TicketRepositoryImpl implements TicketRepositoryBase {
 		});
 	}
 
+	@Override
+	public void updateTicketStatus(Integer ticketId, Integer statusId) {
+		if (ticketId != null && statusId != null) {
+			getJdbcTemplate().update("UPDATE TICKETS SET STATUS_ID = ? WHERE TICKET_ID = ?", statusId, ticketId);
+		}	
+	}
+
 	public JdbcTemplate getJdbcTemplate() {
 		return jdbcTemplate;
 	}

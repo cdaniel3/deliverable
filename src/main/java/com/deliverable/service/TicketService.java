@@ -20,4 +20,6 @@ public interface TicketService {
 	public void removePriority(Integer ticketId);
 	
 	public List<Transition> getTransitions(Integer ticketTypeId, Integer originStatusId);
+	
+	public void updateTicketStatus(Integer ticketId, Integer statusId);
 }

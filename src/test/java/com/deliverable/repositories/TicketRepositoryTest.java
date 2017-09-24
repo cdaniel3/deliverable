@@ -61,12 +61,12 @@ public class TicketRepositoryTest {
 	
 	private void resetTicket() {
 		getTicketRepository().updateTicketDescription(TICKET_ID, getUnmodifiedTicket().getDescription());
+		getTicketRepository().updateTicketStatus(TICKET_ID, getUnmodifiedTicket().getStatus().getId());
 	}
 	
 	private Ticket getTicketFromRepo() {
 		return getTicketRepository().findTicketById(TICKET_ID);
 	}
-	
 	
 	@Test
 	public void testUpdateTicketNewDescription() {
@@ -170,11 +170,30 @@ public class TicketRepositoryTest {
 			assertNotNull(destStatus.getId());
 			assertNotNull(destStatus.getValue());
 		}
-		
-		List<Transition> noTransitions = getTicketRepository().getTransitions(INVALID_ID, INVALID_ID);
-		assertThat(noTransitions, IsEmptyCollection.empty());
 	}
 	
+	@Test
+	public void testGetTransitionsWithInvalidIds() {
+		List<Transition> transitions = getTicketRepository().getTransitions(INVALID_ID, INVALID_ID);
+		assertThat(transitions, IsEmptyCollection.empty());
+	}
+	
+	@Test
+	public void testGetTransitionsNullIds() {
+		List<Transition> transitions = getTicketRepository().getTransitions(null, null);
+		assertThat(transitions, IsEmptyCollection.empty());
+	}
+	
+	@Test
+	public void testUpdateTicketStatus() {
+		Ticket ticket = getTicketFromRepo();
+		Integer newStatusId = 1;
+		if (newStatusId == ticket.getStatus().getId()) {
+			newStatusId = 2;
+		}
+		getTicketRepository().updateTicketStatus(TICKET_ID, newStatusId);
+		assertEquals(newStatusId, new Integer(getTicketFromRepo().getStatus().getId()));
+	}
 	
 	public static boolean areNotClosed(List<Ticket> tickets) {
 		boolean areNotClosed = true;
