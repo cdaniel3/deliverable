@@ -26,7 +26,7 @@ public class TicketRESTController {
 		return getTicketService().getUnresolvedTickets();
 	}
 	
-	@RequestMapping(method=RequestMethod.POST, value="/{ticketId}")
+	@RequestMapping(method=RequestMethod.GET, value="/{ticketId}")
 	public Ticket getTicket(@PathVariable Integer ticketId) {
 		return getTicketService().getTicket(ticketId);
 	}
