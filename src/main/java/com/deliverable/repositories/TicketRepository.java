@@ -32,5 +32,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer>, Ticket
 	// example of using named query
 	public List<Ticket> findTicketByNameIs(@Param("name") String name);	
 	
-	
+	public List<Ticket> findTicketByStatusValue(String statusValue);
 }

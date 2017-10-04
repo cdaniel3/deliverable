@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deliverable.model.Priority;
+import com.deliverable.model.Status;
 import com.deliverable.model.Ticket;
 import com.deliverable.service.TicketService;
 
@@ -23,6 +24,11 @@ public class TicketRESTController {
 	@RequestMapping(method=RequestMethod.GET)
 	public List<Ticket> getTicketsInProgress() {
 		return getTicketService().getUnresolvedTickets();
+	}
+	
+	@RequestMapping(method=RequestMethod.GET, value="/{ticketId}")
+	public Ticket getTicket(@PathVariable Integer ticketId) {
+		return getTicketService().getTicket(ticketId);
 	}
 	
 	/**
@@ -53,6 +59,20 @@ public class TicketRESTController {
 		Priority priority = ticket.getPriority();
 		Integer priorityId = priority.getId();
 		getTicketService().updateTicketPriority(ticketId, priorityId);		
+		return getTicketService().getTicket(ticketId);
+	}
+	
+	/**
+	 * TODO Need to use some exceptions here in case an invalid status is passed in. The rest service should then return a 400 (bad request?) error.
+	 * {"id":1,"status":{"id":4}}
+	 * @param ticketId
+	 * @param ticket
+	 * @return
+	 */
+	@RequestMapping(method=RequestMethod.POST, value="/{ticketId}/status")
+	public Ticket updateTicketStatus(@PathVariable Integer ticketId, @RequestBody Ticket ticket) {
+		Status status = ticket.getStatus();
+		getTicketService().updateTicketStatus(ticketId, status.getId());
 		return getTicketService().getTicket(ticketId);
 	}
 

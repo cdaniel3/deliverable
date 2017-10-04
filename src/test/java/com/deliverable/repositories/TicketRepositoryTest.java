@@ -2,12 +2,14 @@ package com.deliverable.repositories;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.List;
 
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,12 +24,16 @@ import com.deliverable.AppConfig;
 import com.deliverable.model.Priority;
 import com.deliverable.model.Status;
 import com.deliverable.model.Ticket;
+import com.deliverable.model.Transition;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class})
 public class TicketRepositoryTest {
 	
 	private static final Integer TICKET_ID = 1;
+	private static final Integer FEATURE_TYPE_ID = 1;
+	private static final Integer IN_DEV_STATUS_ID = 3;
+	private static final Integer INVALID_ID = -1;
 	
 	@Autowired
 	private TicketRepository ticketRepository;
@@ -55,12 +61,12 @@ public class TicketRepositoryTest {
 	
 	private void resetTicket() {
 		getTicketRepository().updateTicketDescription(TICKET_ID, getUnmodifiedTicket().getDescription());
+		getTicketRepository().updateTicketStatus(TICKET_ID, getUnmodifiedTicket().getStatus().getId());
 	}
 	
 	private Ticket getTicketFromRepo() {
 		return getTicketRepository().findTicketById(TICKET_ID);
 	}
-	
 	
 	@Test
 	public void testUpdateTicketNewDescription() {
@@ -153,6 +159,41 @@ public class TicketRepositoryTest {
 		assertEquals(newPriority.getId(), getTicketFromRepo().getPriority().getId());
 	}
 	
+	@Test
+	public void testGetTransitionsFromTicketTypeAndOriginStatus() {
+		List<Transition> transitions = getTicketRepository().getTransitions(FEATURE_TYPE_ID, IN_DEV_STATUS_ID);
+		assertThat(transitions, not(IsEmptyCollection.empty()));
+		for (Transition transition : transitions) {
+			assertNotNull(transition.getName());
+			Status destStatus = transition.getDestinationStatus();
+			assertNotNull(destStatus);
+			assertNotNull(destStatus.getId());
+			assertNotNull(destStatus.getValue());
+		}
+	}
+	
+	@Test
+	public void testGetTransitionsWithInvalidIds() {
+		List<Transition> transitions = getTicketRepository().getTransitions(INVALID_ID, INVALID_ID);
+		assertThat(transitions, IsEmptyCollection.empty());
+	}
+	
+	@Test
+	public void testGetTransitionsNullIds() {
+		List<Transition> transitions = getTicketRepository().getTransitions(null, null);
+		assertThat(transitions, IsEmptyCollection.empty());
+	}
+	
+	@Test
+	public void testUpdateTicketStatus() {
+		Ticket ticket = getTicketFromRepo();
+		Integer newStatusId = 1;
+		if (newStatusId == ticket.getStatus().getId()) {
+			newStatusId = 2;
+		}
+		getTicketRepository().updateTicketStatus(TICKET_ID, newStatusId);
+		assertEquals(newStatusId, new Integer(getTicketFromRepo().getStatus().getId()));
+	}
 	
 	public static boolean areNotClosed(List<Ticket> tickets) {
 		boolean areNotClosed = true;
