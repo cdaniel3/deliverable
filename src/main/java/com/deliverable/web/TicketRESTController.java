@@ -2,6 +2,8 @@ package com.deliverable.web;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,12 +19,15 @@ import com.deliverable.service.TicketService;
 @RestController
 @RequestMapping("/tickets")
 public class TicketRESTController {
+	
+	private Log log = LogFactory.getLog(TicketRESTController.class);
 
 	@Autowired
 	private TicketService ticketService;
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public List<Ticket> getTicketsInProgress() {
+		log.debug("Getting tickets in progress...");
 		return getTicketService().getUnresolvedTickets();
 	}
 	

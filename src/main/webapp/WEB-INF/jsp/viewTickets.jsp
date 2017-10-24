@@ -10,7 +10,7 @@
 	}
 	th, td {
 		padding: 10px;
-		
+
 	}
 	th {
 		text-align: left;
@@ -34,16 +34,7 @@
   <th>Status</th>
   <th>Created</th>
 </tr>
-<c:forEach items="${tickets}" var="ticket">
-<tr>
-<td>${ticket.id}</td>
-<td><a href="/deliverable/viewTickets/${ticket.id}">${ticket.ticketType.name}</a></td>
-<td>${ticket.priority.value}</td>
-<td>${ticket.name}</td>
-<td>${ticket.status.value}</td>
-<td>${ticket.dateCreated}</td>
-</tr>
-</c:forEach>
+
 </tbody></table>
 
 </html>
