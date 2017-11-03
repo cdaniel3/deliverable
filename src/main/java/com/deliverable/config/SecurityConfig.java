@@ -26,15 +26,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 			.httpBasic();
 	}
-	
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth
 			.jdbcAuthentication()
 				.dataSource(dataSource)
-				.usersByUsernameQuery("select username, password, enabled from users where username = ?")
-				.authoritiesByUsernameQuery("select username, authority from authorities where username = ?")
-				.passwordEncoder(new BCryptPasswordEncoder(12));				
+				.usersByUsernameQuery("SELECT USERNAME, PASSWORD, ENABLED FROM USERS WHERE USERNAME = ?")
+				.authoritiesByUsernameQuery("SELECT USERNAME, AUTHORITY FROM AUTHORITIES WHERE USERNAME = ?")
+				.passwordEncoder(new BCryptPasswordEncoder(12));
 	}
 
 }

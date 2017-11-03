@@ -1,4 +1,7 @@
+drop database deliverable_db;
+
 create DATABASE deliverable_db;
+use deliverable_db;
 
 -- read only access
 create user 'deliv_read'@'localhost' identified by 'password';
@@ -29,7 +32,7 @@ create table TRANSITION (TRANSITION_ID int not null auto_increment, NAME varchar
 CREATE TABLE USERS (USERNAME VARCHAR(50) NOT NULL, `PASSWORD` VARCHAR(60) NULL DEFAULT NULL,	`ENABLED` TINYINT(1) NOT NULL, PRIMARY KEY (USERNAME));
 
 -- Create AUTHORITIES table
-CREATE TABLE `authorities` (USERNAME VARCHAR(50) NOT NULL, AUTHORITY VARCHAR(50) NOT NULL, UNIQUE INDEX `ix_auth_username` (`USERNAME`, `AUTHORITY`),	CONSTRAINT `fk_authorities_users` FOREIGN KEY (`USERNAME`) REFERENCES `USERS` (`USERNAME`));
+CREATE TABLE AUTHORITIES (USERNAME VARCHAR(50) NOT NULL, AUTHORITY VARCHAR(50) NOT NULL, UNIQUE INDEX `ix_auth_username` (`USERNAME`, `AUTHORITY`),	CONSTRAINT `fk_authorities_users` FOREIGN KEY (`USERNAME`) REFERENCES `USERS` (`USERNAME`));
 
 -- Insert TICKETTYPE records
 insert into TICKETTYPE set NAME='Feature';
