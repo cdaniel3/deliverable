@@ -16,35 +16,35 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name="TICKETS")
+@Table(name="tickets")
 @NamedQuery(name = "Ticket.findByNameIs",
 		query = "SELECT t FROM Ticket t WHERE t.name = :name")
 public class Ticket {
 
 	@Id
-	@Column(name="TICKET_ID")
+	@Column(name="ticket_id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	
+
 	private String name;
 	private String description;
-	
-	@Column(name="DATE_CREATED")
+
+	@Column(name="date_created")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateCreated;
-	
+
 	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="TICKETTYPE_ID")
+	@JoinColumn(name="tickettype_id")
 	private TicketType ticketType;
-	
+
 	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="PRIORITY_ID")
+	@JoinColumn(name="priority_id")
 	private Priority priority;
-	
+
 	@OneToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="STATUS_ID")
+	@JoinColumn(name="status_id")
 	private Status status;
-	
+
 	public int getId() {
 		return id;
 	}
@@ -92,7 +92,7 @@ public class Ticket {
 	public void setPriority(Priority priority) {
 		this.priority = priority;
 	}
-	
+
 	public Status getStatus() {
 		return status;
 	}
@@ -100,6 +100,6 @@ public class Ticket {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	
-	
+
+
 }

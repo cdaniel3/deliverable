@@ -1,6 +1,6 @@
 drop database deliverable_db;
 
-create DATABASE deliverable_db;
+create database deliverable_db;
 use deliverable_db;
 
 -- read only access
@@ -13,59 +13,59 @@ create user 'deliv_write'@'localhost' identified by 'password';
 grant select, delete, insert, update on deliverable_db.* to 'deliv_write'@'%' identified by 'password';
 flush privileges;
 
--- Create TICKETTYPE table
-create table TICKETTYPE (TICKETTYPE_ID int not null auto_increment, NAME varchar(30) not null, PRIMARY KEY (TICKETTYPE_ID));
+-- create tickettype table
+create table tickettype (tickettype_id int not null auto_increment, name varchar(30) not null, primary key (tickettype_id));
 
--- Create PRIORITY table
-create table PRIORITY (PRIORITY_ID int not null auto_increment, NAME varchar(30) not null, WEIGHT int not null, PRIMARY KEY (PRIORITY_ID));
+-- create priority table
+create table priority (priority_id int not null auto_increment, name varchar(30) not null, weight int not null, primary key (priority_id));
 
--- Create STATUS table
-create table STATUS (STATUS_ID int not null auto_increment, NAME varchar(30) not null, PRIMARY KEY (STATUS_ID));
+-- create status table
+create table status (status_id int not null auto_increment, name varchar(30) not null, primary key (status_id));
 
--- Create TICKETS table
-create table TICKETS (TICKET_ID int not null auto_increment, NAME varchar(64) not null, DESCRIPTION text, TICKETTYPE_ID int not null, PRIORITY_ID int, STATUS_ID int not null, DATE_CREATED timestamp default current_timestamp, PRIMARY KEY (TICKET_ID), FOREIGN KEY (TICKETTYPE_ID) references TICKETTYPE(TICKETTYPE_ID), FOREIGN KEY (PRIORITY_ID) references PRIORITY(PRIORITY_ID), FOREIGN KEY (STATUS_ID) references STATUS(STATUS_ID));
+-- create tickets table
+create table tickets (ticket_id int not null auto_increment, name varchar(64) not null, description text, tickettype_id int not null, priority_id int, status_id int not null, date_created timestamp default current_timestamp, primary key (ticket_id), foreign key (tickettype_id) references tickettype(tickettype_id), foreign key (priority_id) references priority(priority_id), foreign key (status_id) references status(status_id));
 
--- Create TRANSITION table
-create table TRANSITION (TRANSITION_ID int not null auto_increment, NAME varchar(64), TICKETTYPE_ID int not null, ORIGIN_STATUS int not null, DEST_STATUS int not null, PRIMARY KEY (TRANSITION_ID), FOREIGN KEY (TICKETTYPE_ID) references TICKETTYPE(TICKETTYPE_ID), FOREIGN KEY (ORIGIN_STATUS) references STATUS(STATUS_ID), FOREIGN KEY (DEST_STATUS) references STATUS(STATUS_ID));
+-- create transition table
+create table transition (transition_id int not null auto_increment, name varchar(64), tickettype_id int not null, origin_status int not null, dest_status int not null, primary key (transition_id), foreign key (tickettype_id) references tickettype(tickettype_id), foreign key (origin_status) references status(status_id), foreign key (dest_status) references status(status_id));
 
--- Create USERS table
-CREATE TABLE USERS (USERNAME VARCHAR(50) NOT NULL, `PASSWORD` VARCHAR(60) NULL DEFAULT NULL,	`ENABLED` TINYINT(1) NOT NULL, PRIMARY KEY (USERNAME));
+-- create users table
+create table users (username varchar(50) not null, `password` varchar(60) null default null,	`enabled` tinyint(1) not null, primary key (username));
 
--- Create AUTHORITIES table
-CREATE TABLE AUTHORITIES (USERNAME VARCHAR(50) NOT NULL, AUTHORITY VARCHAR(50) NOT NULL, UNIQUE INDEX `ix_auth_username` (`USERNAME`, `AUTHORITY`),	CONSTRAINT `fk_authorities_users` FOREIGN KEY (`USERNAME`) REFERENCES `USERS` (`USERNAME`));
+-- create authorities table
+create table authorities (username varchar(50) not null, authority varchar(50) not null, unique index `ix_auth_username` (`username`, `authority`),	constraint `fk_authorities_users` foreign key (`username`) references `users` (`username`));
 
--- Insert TICKETTYPE records
-insert into TICKETTYPE set NAME='Feature';
-insert into TICKETTYPE set NAME='Bug';
+-- insert tickettype records
+insert into tickettype set name='feature';
+insert into tickettype set name='bug';
 
--- Insert PRIORITY records
-insert into PRIORITY set NAME='High', WEIGHT=250;
-insert into PRIORITY set NAME='Medium', WEIGHT=150;
-insert into PRIORITY set NAME='Low', WEIGHT=50;
-insert into PRIORITY set NAME='None', WEIGHT=0;
+-- insert priority records
+insert into priority set name='high', weight=250;
+insert into priority set name='medium', weight=150;
+insert into priority set name='low', weight=50;
+insert into priority set name='none', weight=0;
 
--- Insert STATUS records
-insert into STATUS set NAME='Open';
-insert into STATUS set NAME='In Analysis';
-insert into STATUS set NAME='In Development';
-insert into STATUS set NAME='In QA';
-insert into STATUS set NAME='Closed';
-insert into STATUS SET NAME='In Code Review';
+-- insert status records
+insert into status set name='open';
+insert into status set name='in analysis';
+insert into status set name='in development';
+insert into status set name='in qa';
+insert into status set name='closed';
+insert into status set name='in code review';
 
--- Insert TRANSITION records
-insert into TRANSITION set NAME='Move to Analysis', TICKETTYPE_ID=1, ORIGIN_STATUS=1, DEST_STATUS=2;
-insert into TRANSITION set NAME='Move to Development', TICKETTYPE_ID=1, ORIGIN_STATUS=2, DEST_STATUS=3;
-insert into TRANSITION set NAME='Ready for QA', TICKETTYPE_ID=1, ORIGIN_STATUS=3, DEST_STATUS=4;
-insert into TRANSITION set NAME='Close', TICKETTYPE_ID=1, ORIGIN_STATUS=4, DEST_STATUS=5;
-insert into TRANSITION set NAME='Reopen', TICKETTYPE_ID=1, ORIGIN_STATUS=5, DEST_STATUS=1;
-insert into TRANSITION set NAME='Move to Code Review', TICKETTYPE_ID=1, ORIGIN_STATUS=3, DEST_STATUS=6;
-insert into TRANSITION set NAME='Move to Development', TICKETTYPE_ID=1, ORIGIN_STATUS=6, DEST_STATUS=3;
-insert into TRANSITION set NAME='Move to Development', TICKETTYPE_ID=1, ORIGIN_STATUS=4, DEST_STATUS=3;
-insert into TRANSITION set NAME='Move to Analysis', TICKETTYPE_ID=2, ORIGIN_STATUS=1, DEST_STATUS=2;
-insert into TRANSITION set NAME='Move to Development', TICKETTYPE_ID=2, ORIGIN_STATUS=2, DEST_STATUS=3;
-insert into TRANSITION set NAME='Ready for QA', TICKETTYPE_ID=2, ORIGIN_STATUS=3, DEST_STATUS=4;
-insert into TRANSITION set NAME='Close', TICKETTYPE_ID=2, ORIGIN_STATUS=4, DEST_STATUS=5;
-insert into TRANSITION set NAME='Reopen', TICKETTYPE_ID=2, ORIGIN_STATUS=5, DEST_STATUS=1;
-insert into TRANSITION set NAME='Move to Code Review', TICKETTYPE_ID=2, ORIGIN_STATUS=3, DEST_STATUS=6;
-insert into TRANSITION set NAME='Move to Development', TICKETTYPE_ID=2, ORIGIN_STATUS=6, DEST_STATUS=3;
-insert into TRANSITION set NAME='Move to Development', TICKETTYPE_ID=2, ORIGIN_STATUS=4, DEST_STATUS=3;
+-- insert transition records
+insert into transition set name='move to analysis', tickettype_id=1, origin_status=1, dest_status=2;
+insert into transition set name='move to development', tickettype_id=1, origin_status=2, dest_status=3;
+insert into transition set name='ready for qa', tickettype_id=1, origin_status=3, dest_status=4;
+insert into transition set name='close', tickettype_id=1, origin_status=4, dest_status=5;
+insert into transition set name='reopen', tickettype_id=1, origin_status=5, dest_status=1;
+insert into transition set name='move to code review', tickettype_id=1, origin_status=3, dest_status=6;
+insert into transition set name='move to development', tickettype_id=1, origin_status=6, dest_status=3;
+insert into transition set name='move to development', tickettype_id=1, origin_status=4, dest_status=3;
+insert into transition set name='move to analysis', tickettype_id=2, origin_status=1, dest_status=2;
+insert into transition set name='move to development', tickettype_id=2, origin_status=2, dest_status=3;
+insert into transition set name='ready for qa', tickettype_id=2, origin_status=3, dest_status=4;
+insert into transition set name='close', tickettype_id=2, origin_status=4, dest_status=5;
+insert into transition set name='reopen', tickettype_id=2, origin_status=5, dest_status=1;
+insert into transition set name='move to code review', tickettype_id=2, origin_status=3, dest_status=6;
+insert into transition set name='move to development', tickettype_id=2, origin_status=6, dest_status=3;
+insert into transition set name='move to development', tickettype_id=2, origin_status=4, dest_status=3;

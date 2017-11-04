@@ -6,18 +6,18 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Status")
+@Table(name="status")
 public class Status {
-	
+
 	@Id
-	@Column(name="STATUS_ID")
+	@Column(name="status_id")
 	private int id;
 
-	@Column(name="NAME")
+	@Column(name="name")
 	private String value;
-	
+
 	public Status() {}
-	
+
 	public Status(int id, String value) {
 		this.id = id;
 		this.value = value;
@@ -38,7 +38,5 @@ public class Status {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-
-
+	
 }

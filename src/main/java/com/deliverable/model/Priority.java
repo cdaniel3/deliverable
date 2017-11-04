@@ -6,17 +6,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Priority")
+@Table(name="priority")
 public class Priority {
-	
+
 	@Id
-	@Column(name="PRIORITY_ID")
+	@Column(name="priority_id")
 	private int id;
-	
+
 	//POC'ing a scenario where the database column is "name", but we want the actual field to be called "value"
-	@Column(name="NAME")
+	@Column(name="name")
 	private String value;
-	
+
 	private int weight;
 
 	public int getId() {
@@ -26,7 +26,7 @@ public class Priority {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getValue() {
 		return value;
 	}
@@ -42,6 +42,5 @@ public class Priority {
 	public void setWeight(int weight) {
 		this.weight = weight;
 	}
-	
 	
 }

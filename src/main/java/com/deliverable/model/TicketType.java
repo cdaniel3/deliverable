@@ -6,13 +6,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="TICKETTYPE")
+@Table(name="tickettype")
 public class TicketType {
-	
+
 	@Id
-	@Column(name="TICKETTYPE_ID")
+	@Column(name="tickettype_id")
 	private int id;
-	
+
 	private String name;
 
 	public int getId() {
