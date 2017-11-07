@@ -29,7 +29,7 @@ create table tickets (ticket_id int not null auto_increment, name varchar(64) no
 create table transition (transition_id int not null auto_increment, name varchar(64), tickettype_id int not null, origin_status int not null, dest_status int not null, primary key (transition_id), foreign key (tickettype_id) references tickettype(tickettype_id), foreign key (origin_status) references status(status_id), foreign key (dest_status) references status(status_id));
 
 -- create users table
-create table users (username varchar(50) not null, `password` varchar(60) null default null,	`enabled` tinyint(1) not null, primary key (username));
+create table users (username varchar(50) not null, password varchar(60) null default null, enabled tinyint(1) not null, primary key (username));
 
 -- create authorities table
 create table authorities (username varchar(50) not null, authority varchar(50) not null, unique index `ix_auth_username` (`username`, `authority`),	constraint `fk_authorities_users` foreign key (`username`) references `users` (`username`));
