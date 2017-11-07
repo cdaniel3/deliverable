@@ -76,6 +76,27 @@ public class TicketServiceImpl implements TicketService {
 		}
 		
 	}
+	
+	public Ticket updateTicket(Integer ticketId, Ticket modifiedTicket) {
+		Ticket ticket = getTicketRepository().findTicketById(ticketId);
+		String name = modifiedTicket.getName();
+		if (name != null) {
+			ticket.setName(name);
+		}
+		String description = modifiedTicket.getDescription();
+		if (description != null) {
+			ticket.setDescription(description);
+		}
+		Priority priority = modifiedTicket.getPriority();
+		if (priority != null) {
+			// TODO handle errors with incorrect priority ids
+			Priority newPriority = getPriorityRepository().findPriorityById(priority.getId());
+			if (newPriority != null) {
+				ticket.setPriority(newPriority);
+			}
+		}
+		return getTicketRepository().save(ticket);		
+	}
 
 	public TicketRepository getTicketRepository() {
 		return ticketRepository;

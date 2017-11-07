@@ -22,4 +22,6 @@ public interface TicketService {
 	public List<Transition> getTransitions(Integer ticketTypeId, Integer originStatusId);
 	
 	public void updateTicketStatus(Integer ticketId, Integer statusId);
+	
+	public Ticket updateTicket(Integer ticketId, Ticket ticket);
 }
