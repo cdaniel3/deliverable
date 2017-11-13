@@ -29,6 +29,10 @@ public class Ticket {
 	private String name;
 	private String description;
 
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="assignee_id")
+	private User assignee;
+	
 	@Column(name="date_created")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateCreated;
@@ -67,6 +71,14 @@ public class Ticket {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public User getAssignee() {
+		return assignee;
+	}
+
+	public void setAssignee(User assignee) {
+		this.assignee = assignee;
 	}
 
 	public Date getDateCreated() {
