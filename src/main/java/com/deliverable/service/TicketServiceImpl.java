@@ -8,13 +8,12 @@ import org.springframework.stereotype.Service;
 import com.deliverable.model.Priority;
 import com.deliverable.model.Ticket;
 import com.deliverable.model.Transition;
+import com.deliverable.model.User;
 import com.deliverable.repositories.PriorityRepository;
 import com.deliverable.repositories.TicketRepository;
 
 @Service
 public class TicketServiceImpl implements TicketService {
-
-	private final static String NONE_PRIORITY = "None";
 
 	@Autowired
 	private TicketRepository ticketRepository;
@@ -28,25 +27,6 @@ public class TicketServiceImpl implements TicketService {
 	
 	public List<Ticket> getUnresolvedTickets() {
 		return getTicketRepository().findTicketByStatusValueNotOrderByPriorityWeightDescDateCreated("closed");
-	}
-	
-	public void updateTicketName(Integer ticketId, String name) {
-		getTicketRepository().updateTicketName(ticketId, name);
-	}
-	
-	public void updateTicketPriority(Integer ticketId, Integer priorityId) {
-		getTicketRepository().updateTicketPriority(ticketId, priorityId);
-	}
-	
-	public void updateTicketDescription(Integer ticketId, String description) {
-		getTicketRepository().updateTicketDescription(ticketId, description);
-	}
-	
-	public void removePriority(Integer ticketId) {
-		Priority nonePriority = getPriorityRepository().findPriorityByValue(NONE_PRIORITY);
-		if (nonePriority != null) {
-			updateTicketPriority(ticketId, nonePriority.getId());
-		}
 	}
 	
 	public List<Transition> getTransitions(Integer ticketTypeId, Integer originStatusId) {
@@ -77,8 +57,9 @@ public class TicketServiceImpl implements TicketService {
 		
 	}
 	
-	public Ticket updateTicket(Integer ticketId, Ticket modifiedTicket) {
-		Ticket ticket = getTicketRepository().findTicketById(ticketId);
+	@Override
+	public Ticket updateTicket(Ticket modifiedTicket) {
+		Ticket ticket = getTicketRepository().findTicketById(modifiedTicket.getId());		
 		String name = modifiedTicket.getName();
 		if (name != null) {
 			ticket.setName(name);
@@ -95,7 +76,30 @@ public class TicketServiceImpl implements TicketService {
 				ticket.setPriority(newPriority);
 			}
 		}
-		return getTicketRepository().save(ticket);		
+		/*
+		 * Ticket.assignee:
+		 * 		If NULL:
+		 * 			don't do anything
+		 * 		If not null and contains an id (or username):
+		 * 			Look up the id and set the assignee field to the returned user
+		 * 		If not null and assignee.username is "unassigned":
+		 * 			Update ticket.assignee to NULL
+		 * 			(Create a new user record with username="unassigned" and enabled=0 to prevent an actual user from registering with a username="unassigned"?) 
+		 */
+		User assignee = modifiedTicket.getAssignee();
+		if (assignee != null) {
+			String username = assignee.getUsername();
+			if (username != null) {
+				if (username.equals("unassigned")) {
+					// Need to unassign ticket by setting ticket.assignee to null
+					ticket.setAssignee(null);
+				} else { 
+				// TODO else find user by id or username, then update ticket.assignee to that user
+					
+				}
+			}
+		}
+		return getTicketRepository().save(ticket);	
 	}
 
 	public TicketRepository getTicketRepository() {
@@ -104,5 +108,9 @@ public class TicketServiceImpl implements TicketService {
 
 	public PriorityRepository getPriorityRepository() {
 		return priorityRepository;
+	}
+
+	public void setTicketRepository(TicketRepository ticketRepository) {
+		this.ticketRepository = ticketRepository;
 	}
 }

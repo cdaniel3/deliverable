@@ -11,17 +11,10 @@ public interface TicketService {
 	
 	public List<Ticket> getUnresolvedTickets();
 
-	public void updateTicketName(Integer ticketId, String name);
-
-	public void updateTicketPriority(Integer ticketId, Integer priorityId);
-	
-	public void updateTicketDescription(Integer ticketId, String description);
-	
-	public void removePriority(Integer ticketId);
-	
 	public List<Transition> getTransitions(Integer ticketTypeId, Integer originStatusId);
 	
 	public void updateTicketStatus(Integer ticketId, Integer statusId);
 	
-	public Ticket updateTicket(Integer ticketId, Ticket ticket);
+	public Ticket updateTicket(Ticket ticket);
+	
 }
