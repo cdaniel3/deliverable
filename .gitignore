@@ -20,7 +20,8 @@
 # Target class folder #
 #######################
 target
-deliverable TODO\.txt
-design
+
+# Spring #
+##########
 logs
 
