@@ -2,14 +2,13 @@ package com.deliverable.model;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,7 +25,7 @@ public class Ticket {
 	private String name;
 	private String description;
 
-	@OneToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="assignee_id")
 	private User assignee;
 	
@@ -34,15 +33,15 @@ public class Ticket {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateCreated;
 
-	@OneToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="tickettype_id")
 	private TicketType ticketType;
 
-	@OneToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="priority_id")
 	private Priority priority;
 
-	@OneToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="status_id")
 	private Status status;
 

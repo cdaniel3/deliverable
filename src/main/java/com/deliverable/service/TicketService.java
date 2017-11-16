@@ -17,4 +17,6 @@ public interface TicketService {
 	
 	public Ticket updateTicket(Ticket ticket);
 	
+	public Ticket createTicket(Ticket ticket);
+	
 }

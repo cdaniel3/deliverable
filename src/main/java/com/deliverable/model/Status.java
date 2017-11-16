@@ -2,15 +2,21 @@ package com.deliverable.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="status")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})		// Ignores properties created by hibernate during lazy load
 public class Status {
 
 	@Id
 	@Column(name="status_id")
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 
 	@Column(name="name")

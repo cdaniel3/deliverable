@@ -34,6 +34,11 @@ public class TicketRESTController {
 		return getTicketService().getTicket(ticketId);
 	}
 	
+	@RequestMapping(method=RequestMethod.POST)
+	public Ticket createTicket(@RequestBody Ticket newTicket) {
+		return getTicketService().createTicket(newTicket);
+	}
+	
 	/**
 	 * Example uri: /tickets/1
 	 * Example request body: { "name":"new name" }
