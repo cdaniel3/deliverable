@@ -20,7 +20,7 @@ public class Ticket {
 	@Id
 	@Column(name="ticket_id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+	private long id;
 
 	private String name;
 	private String description;
@@ -45,11 +45,11 @@ public class Ticket {
 	@JoinColumn(name="status_id")
 	private Status status;
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

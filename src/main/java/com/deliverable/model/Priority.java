@@ -17,7 +17,7 @@ public class Priority {
 	@Id
 	@Column(name="priority_id")
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	private long id;
 
 	@Column(name="name")
 	private String value;
@@ -28,17 +28,17 @@ public class Priority {
 		
 	}
 	
-	public Priority(int id, String value, int weight) {
+	public Priority(long id, String value, int weight) {
 		this.id = id;
 		this.value = value;
 		this.weight = weight;
 	}
-
-	public int getId() {
+	
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

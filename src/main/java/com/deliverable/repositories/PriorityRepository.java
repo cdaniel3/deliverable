@@ -4,10 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.deliverable.model.Priority;
 
-public interface PriorityRepository extends JpaRepository<Priority, Integer> {
+public interface PriorityRepository extends JpaRepository<Priority, Long> {
 	
 	public Priority findPriorityByValue(String value);
 	
-	public Priority findPriorityById(Integer id);
+	public Priority findPriorityById(Long id);
 	
 }

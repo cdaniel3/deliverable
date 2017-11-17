@@ -19,7 +19,7 @@ public class TransitionRESTController {
 	private TicketService ticketService;
 	
 	@RequestMapping(method=RequestMethod.GET, params = {"ticket-type","origin-status"})
-	public List<Transition> getTransitions(@RequestParam("ticket-type") Integer ticketTypeId, @RequestParam("origin-status") Integer originStatusId) {
+	public List<Transition> getTransitions(@RequestParam("ticket-type") Long ticketTypeId, @RequestParam("origin-status") Long originStatusId) {
 		return getTicketService().getTransitions(ticketTypeId, originStatusId);
 	}
 

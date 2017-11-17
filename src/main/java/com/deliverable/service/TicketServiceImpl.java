@@ -37,7 +37,7 @@ public class TicketServiceImpl implements TicketService {
 	@Autowired
 	private EntityManager entityManager;
 
-	public Ticket getTicket(Integer ticketId) {
+	public Ticket getTicket(Long ticketId) {
 		return getTicketRepository().findTicketById(ticketId);
 	}
 	
@@ -99,12 +99,12 @@ public class TicketServiceImpl implements TicketService {
 		}
 	}
 
-	public List<Transition> getTransitions(Integer ticketTypeId, Integer originStatusId) {
+	public List<Transition> getTransitions(Long ticketTypeId, Long originStatusId) {
 		return getTicketRepository().getTransitions(ticketTypeId, originStatusId);
 	}
 	
 	@Override
-	public void updateTicketStatus(Integer ticketId, Integer statusId) {
+	public void updateTicketStatus(Long ticketId, Long statusId) {
 		// First check if status is an allowed status
 		Ticket ticket = getTicketRepository().findTicketById(ticketId);
 		if (ticket != null && statusId != null) {

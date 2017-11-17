@@ -30,7 +30,7 @@ public class TicketRESTController {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/{ticketId}")
-	public Ticket getTicket(@PathVariable Integer ticketId) {
+	public Ticket getTicket(@PathVariable Long ticketId) {
 		return getTicketService().getTicket(ticketId);
 	}
 	
@@ -47,7 +47,7 @@ public class TicketRESTController {
 	 * @return
 	 */
 	@RequestMapping(method=RequestMethod.PUT, value="/{ticketId}")
-	public Ticket updateTicket(@PathVariable Integer ticketId, @RequestBody Ticket updatedTicket) {
+	public Ticket updateTicket(@PathVariable Long ticketId, @RequestBody Ticket updatedTicket) {
 		updatedTicket.setId(ticketId);
 		return getTicketService().updateTicket(updatedTicket);
 	}

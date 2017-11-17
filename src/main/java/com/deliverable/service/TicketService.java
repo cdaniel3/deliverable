@@ -7,13 +7,13 @@ import com.deliverable.model.Transition;
 
 public interface TicketService {
 
-	public Ticket getTicket(Integer ticketId);
+	public Ticket getTicket(Long ticketId);
 	
 	public List<Ticket> getUnresolvedTickets();
 
-	public List<Transition> getTransitions(Integer ticketTypeId, Integer originStatusId);
+	public List<Transition> getTransitions(Long ticketTypeId, Long originStatusId);
 	
-	public void updateTicketStatus(Integer ticketId, Integer statusId);
+	public void updateTicketStatus(Long ticketId, Long statusId);
 	
 	public Ticket updateTicket(Ticket ticket);
 	

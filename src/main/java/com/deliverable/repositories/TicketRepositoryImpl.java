@@ -23,14 +23,14 @@ public class TicketRepositoryImpl implements TicketRepositoryBase {
 
 	
 	@Override
-	public void updateTicketStatus(Integer ticketId, Integer statusId) {
+	public void updateTicketStatus(Long ticketId, Long statusId) {
 		if (ticketId != null && statusId != null) {
 			getJdbcTemplate().update("UPDATE TICKETS SET STATUS_ID = ? WHERE TICKET_ID = ?", statusId, ticketId);
 		}	
 	}
 	
 	@Override
-	public List<Transition> getTransitions(Integer ticketTypeId, Integer originStatusId) {
+	public List<Transition> getTransitions(Long ticketTypeId, Long originStatusId) {
 		return getJdbcTemplate().query(SELECT_TRANSITIONS_SQL, new Object[]{ticketTypeId, originStatusId}, new RowMapper<Transition>() {
 			@Override
 			public Transition mapRow(ResultSet rs, int rownum) throws SQLException {

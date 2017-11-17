@@ -17,16 +17,24 @@ public class Status {
 	@Id
 	@Column(name="status_id")
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	private long id;
 
 	@Column(name="name")
 	private String value;
 
 	public Status() {}
 
-	public Status(int id, String value) {
+	public Status(long id, String value) {
 		this.id = id;
 		this.value = value;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getValue() {
@@ -35,14 +43,6 @@ public class Status {
 
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 	
 }

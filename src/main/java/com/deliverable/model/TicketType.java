@@ -17,7 +17,7 @@ public class TicketType {
 	@Id
 	@Column(name="tickettype_id")
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	private long id;
 
 	@Column
 	private String name;
@@ -26,16 +26,16 @@ public class TicketType {
 		
 	}
 	
-	public TicketType(int id, String name) {
+	public TicketType(long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
