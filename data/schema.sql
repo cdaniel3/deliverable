@@ -29,7 +29,21 @@ create table users (user_id int not null auto_increment, username varchar(50) no
 create table authorities (user_id int not null, authority varchar(50) not null, foreign key (user_id) references users(user_id));
 
 -- create tickets table
-create table tickets (ticket_id int not null auto_increment, name varchar(64) not null, assignee_id int, description text, tickettype_id int not null, priority_id int, status_id int not null, date_created timestamp default current_timestamp, primary key (ticket_id), foreign key (assignee_id) references users(user_id), foreign key (tickettype_id) references tickettype(tickettype_id), foreign key (priority_id) references priority(priority_id), foreign key (status_id) references status(status_id));
+create table tickets (
+  ticket_id int not null auto_increment,
+  name varchar(64) not null,
+  assignee_id int,
+  description text,
+  tickettype_id int not null,
+  priority_id int,
+  status_id int not null,
+  date_created timestamp default current_timestamp,
+  primary key (ticket_id),
+  foreign key (assignee_id)
+  references users(user_id),
+  foreign key (tickettype_id) references tickettype(tickettype_id),
+  foreign key (priority_id) references priority(priority_id),
+  foreign key (status_id) references status(status_id));
 
 -- create transition table
 create table transition (transition_id int not null auto_increment, name varchar(64), tickettype_id int not null, origin_status int not null, dest_status int not null, primary key (transition_id), foreign key (tickettype_id) references tickettype(tickettype_id), foreign key (origin_status) references status(status_id), foreign key (dest_status) references status(status_id));

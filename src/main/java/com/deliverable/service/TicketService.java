@@ -13,8 +13,6 @@ public interface TicketService {
 
 	public List<Transition> getTransitions(Long ticketTypeId, Long originStatusId);
 	
-	public void updateTicketStatus(Long ticketId, Long statusId);
-	
 	public Ticket updateTicket(Ticket ticket);
 	
 	public Ticket createTicket(Ticket ticket);
