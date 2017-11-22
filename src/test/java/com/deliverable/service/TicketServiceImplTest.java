@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import com.deliverable.config.TicketConfiguration;
 import com.deliverable.exceptions.InvalidTicketException;
 import com.deliverable.model.Priority;
 import com.deliverable.model.Status;
@@ -30,6 +31,9 @@ import com.deliverable.repositories.TicketRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TicketServiceImplTest {
+	
+	private static final String DEFAULT_STATUS = "open";
+	private static final String DEFAULT_PRIORITY = "none";
 
 	@Mock
 	private TicketRepository ticketRepository;
@@ -42,7 +46,7 @@ public class TicketServiceImplTest {
 
 	@Mock
 	private PriorityRepository priorityRepository;
-
+	
 	private TicketServiceImpl ticketServiceImpl = new TicketServiceImpl();
 
 	@Before
@@ -52,6 +56,11 @@ public class TicketServiceImplTest {
 		ticketServiceImpl.setStatusRepository(statusRepository);
 		ticketServiceImpl.setEntityManager(entityManager);
 		ticketServiceImpl.setPriorityRepository(priorityRepository);
+		
+		TicketConfiguration ticketConfiguration = new TicketConfiguration();
+		ticketConfiguration.setDefaultPriority(DEFAULT_PRIORITY);
+		ticketConfiguration.setDefaultStatus(DEFAULT_STATUS);
+		ticketServiceImpl.setTicketConfiguration(ticketConfiguration);
 	}
 
 	private Ticket getMockTicketWithMinimumFields() {
@@ -86,7 +95,7 @@ public class TicketServiceImplTest {
 	}
 
 	private Status getMockOpenStatus() {
-		return new Status(111, "open");
+		return new Status(111, DEFAULT_STATUS);
 	}
 
 	private TicketType getMockFeatureType() {
@@ -94,12 +103,12 @@ public class TicketServiceImplTest {
 	}
 
 	private Priority getMockNonePriority() {
-		return new Priority(411, "none", 123);
+		return new Priority(411, DEFAULT_PRIORITY, 123);
 	}
 
 	private void setupMocksForCreatedTicket(Ticket ticket) {
 		// New tickets should always use Open status
-		when(statusRepository.findStatusByValue(TicketServiceImpl.DEFAULT_STATUS)).thenReturn(getMockOpenStatus());
+		when(statusRepository.findStatusByValue(DEFAULT_STATUS)).thenReturn(getMockOpenStatus());
 		// Use ticket type passed in
 		when(entityManager.getReference(TicketType.class, ticket.getTicketType().getId())).thenReturn(ticket.getTicketType());
 		// Return the ticket object passed to ticketRepository so that assertions can be made from the object passed to it
@@ -113,7 +122,7 @@ public class TicketServiceImplTest {
 		assertNotNull("Created ticket should have non-null date created", createdTicket.getDateCreated());
 		assertNotNull("Created ticket should have non-null ticket type", createdTicket.getTicketType());
 		assertNotNull("Created ticket should have non-null description", createdTicket.getDescription());
-		assertEquals("Created ticket should have default status", TicketServiceImpl.DEFAULT_STATUS, createdTicket.getStatus().getValue());
+		assertEquals("Created ticket should have default status", DEFAULT_STATUS, createdTicket.getStatus().getValue());
 	}
 
 
@@ -124,14 +133,14 @@ public class TicketServiceImplTest {
 		Ticket ticket = getMockTicketWithMinimumFields();
 		setupMocksForCreatedTicket(ticket);
 		// Use none priority for a ticket with minimum fields
-		when(priorityRepository.findPriorityByValue(TicketServiceImpl.DEFAULT_PRIORITY)).thenReturn(getMockNonePriority());
+		when(priorityRepository.findPriorityByValue(DEFAULT_PRIORITY)).thenReturn(getMockNonePriority());
 
 		// Call method under test
 		Ticket createdTicket = ticketServiceImpl.createTicket(ticket);
 
 		// Assertions
 		checkAssertionsForCreatedTicket(createdTicket);
-		assertEquals("Created ticket should have priority equal to default priority", TicketServiceImpl.DEFAULT_PRIORITY, createdTicket.getPriority().getValue());
+		assertEquals("Created ticket should have priority equal to default priority", DEFAULT_PRIORITY, createdTicket.getPriority().getValue());
 		assertEquals("Created ticket should have blank description", "", createdTicket.getDescription());
 	}
 
@@ -160,15 +169,15 @@ public class TicketServiceImplTest {
 		// Set up mock objects
 		Ticket ticket = getMockTicketWithIgnorableFields();
 		setupMocksForCreatedTicket(ticket);
-		// Use none priority when findPriorityByValue("open") is called
-		when(priorityRepository.findPriorityByValue(TicketServiceImpl.DEFAULT_PRIORITY)).thenReturn(getMockNonePriority());
+		// Use none priority when findPriorityByValue("none") is called
+		when(priorityRepository.findPriorityByValue(DEFAULT_PRIORITY)).thenReturn(getMockNonePriority());
 
 		// Call method under test
 		Ticket createdTicket = ticketServiceImpl.createTicket(ticket);
 
 		// Assertions
 		checkAssertionsForCreatedTicket(createdTicket);
-		assertEquals("Created ticket with specific status should have contained a default status instead", TicketServiceImpl.DEFAULT_STATUS, createdTicket.getStatus().getValue());
+		assertEquals("Created ticket with specific status should have contained a default status instead", DEFAULT_STATUS, createdTicket.getStatus().getValue());
 
 		Date specifiedDateInFuture = ticket.getDateCreated();
 		assertFalse("Created ticket contained a specified date, but a generated date was expected", createdTicket.getDateCreated().equals(specifiedDateInFuture));

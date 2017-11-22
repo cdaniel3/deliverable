@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.deliverable.config.TicketConfiguration;
 import com.deliverable.exceptions.InvalidTicketException;
 import com.deliverable.model.Priority;
 import com.deliverable.model.Ticket;
@@ -20,10 +21,6 @@ import com.deliverable.repositories.TicketRepository;
 
 @Service
 public class TicketServiceImpl implements TicketService {
-	
-	public static final String DEFAULT_STATUS = "open";
-	public static final String DEFAULT_PRIORITY = "none";
-	
 
 	@Autowired
 	private TicketRepository ticketRepository;
@@ -36,6 +33,9 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Autowired
 	private PriorityRepository priorityRepository;
+	
+	@Autowired
+	private TicketConfiguration ticketConfiguration;
 
 	public Ticket getTicket(Long ticketId) {
 		return getTicketRepository().findTicketById(ticketId);
@@ -58,9 +58,9 @@ public class TicketServiceImpl implements TicketService {
 			newTicket.setDescription("");
 		}
 		if (newTicket.getPriority() == null) {
-			newTicket.setPriority(priorityRepository.findPriorityByValue(DEFAULT_PRIORITY));
+			newTicket.setPriority(priorityRepository.findPriorityByValue(getTicketConfiguration().getDefaultPriority()));
 		}
-		newTicket.setStatus(statusRepository.findStatusByValue(DEFAULT_STATUS));
+		newTicket.setStatus(statusRepository.findStatusByValue(getTicketConfiguration().getDefaultStatus()));
 		newTicket.setDateCreated(new Date());
 		
 		return getTicketRepository().save(newTicket);
@@ -146,6 +146,12 @@ public class TicketServiceImpl implements TicketService {
 	public void setPriorityRepository(PriorityRepository priorityRepository) {
 		this.priorityRepository = priorityRepository;
 	}
-		
-	
+
+	public TicketConfiguration getTicketConfiguration() {
+		return ticketConfiguration;
+	}
+
+	public void setTicketConfiguration(TicketConfiguration ticketConfiguration) {
+		this.ticketConfiguration = ticketConfiguration;
+	}
 }
