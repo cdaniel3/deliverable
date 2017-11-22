@@ -36,7 +36,7 @@ public class TicketRESTController {
 	
 	@RequestMapping(method=RequestMethod.POST)
 	public Ticket createTicket(@RequestBody Ticket newTicket) {
-		return getTicketService().createTicket(newTicket);
+		return getTicketService().createTicket(newTicket);		
 	}
 	
 	/**

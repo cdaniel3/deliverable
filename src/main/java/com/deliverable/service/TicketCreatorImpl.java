@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
-import com.deliverable.TicketCreationException;
+import com.deliverable.exceptions.InvalidTicketException;
 import com.deliverable.model.Ticket;
 
 @Component
@@ -15,10 +15,10 @@ public class TicketCreatorImpl extends TicketPersister implements TicketCreator 
 	
 	public Ticket createTicket(Ticket sourceTicket) {
 		if (sourceTicket == null) {
-			throw new IllegalArgumentException("Source ticket must not be null");
+			throw new InvalidTicketException("Ticket must not be null");
 		}
 		if (sourceTicket.getName() == null || sourceTicket.getTicketType() == null) {
-			throw new TicketCreationException("Ticket name and ticket type must be specified when creating a new ticket");
+			throw new InvalidTicketException("Ticket name and ticket type must be specified when creating a new ticket");
 		}
 		return persistTicket(sourceTicket);
 	}

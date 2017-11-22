@@ -1,14 +1,13 @@
 package com.deliverable.service;
 
-import static org.mockito.Mockito.when;
-
-import java.util.Calendar;
-import java.util.Date;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.when;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.persistence.EntityManager;
 
@@ -19,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.deliverable.TicketCreationException;
+import com.deliverable.exceptions.InvalidTicketException;
 import com.deliverable.model.Priority;
 import com.deliverable.model.Status;
 import com.deliverable.model.Ticket;
@@ -139,21 +138,21 @@ public class TicketCreatorImplTest {
 		assertFalse("Created ticket contained a specified date, but a generated date was expected", createdTicket.getDateCreated().equals(specifiedDateInFuture));	
 	}
 	
-	@Test(expected=TicketCreationException.class)
+	@Test(expected=InvalidTicketException.class)
 	public void testCreateInvalidTicketNoName() {
 		Ticket ticket = new Ticket();
 		ticket.setTicketType(getMockFeatureType());
 		ticketCreatorImpl.createTicket(ticket);
 	}
 	
-	@Test(expected=TicketCreationException.class)
+	@Test(expected=InvalidTicketException.class)
 	public void testCreateInvalidTicketNoType() {
 		Ticket ticket = new Ticket();
 		ticket.setName("a brand new ticket");
 		ticketCreatorImpl.createTicket(ticket);
 	}
 	
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected=InvalidTicketException.class)
 	public void testCreateNullTicket() {
 		ticketCreatorImpl.createTicket(null);		
 	}
