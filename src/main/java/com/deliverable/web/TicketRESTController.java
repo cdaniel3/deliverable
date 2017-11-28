@@ -52,6 +52,11 @@ public class TicketRESTController {
 		return getTicketService().updateTicket(updatedTicket);		
 	}
 
+	@RequestMapping(method=RequestMethod.DELETE, value="/{ticketId}/assignee")
+	public Ticket unassignTicket(@PathVariable Long ticketId) {
+		return getTicketService().unassignTicket(ticketId);
+	}
+
 	public TicketService getTicketService() {
 		return ticketService;
 	}

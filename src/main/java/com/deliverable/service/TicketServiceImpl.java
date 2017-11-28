@@ -146,6 +146,19 @@ public class TicketServiceImpl implements TicketService {
 		return status;
 	}
 
+	@Override
+	public Ticket unassignTicket(Long ticketId) {
+		if (ticketId == null) {
+			throw new InvalidTicketException("Ticket must not be null");
+		}
+		Ticket entityTicket = ticketRepository.findTicketById(ticketId);
+		if (entityTicket == null) {
+			throw new TicketNotFoundException("Ticket not found. Id: " + ticketId);
+		}
+		entityTicket.setAssignee(null);
+		return getTicketRepository().save(entityTicket);
+	}
+
 
 	public List<Transition> getTransitions(Long ticketTypeId, Long originStatusId) {
 		return getTicketRepository().getTransitions(ticketTypeId, originStatusId);
