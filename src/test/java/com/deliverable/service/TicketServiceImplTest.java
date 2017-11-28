@@ -38,6 +38,7 @@ import com.deliverable.repositories.TicketRepository;
 public class TicketServiceImplTest {
 		
 	private static final long MOCK_UPDATED_TICKET_ID = 1121;
+	private static final long MOCK_INVALID_TICKET_ID = -1;
 	
 	private static final long CURRENT_ASSIGNEE_USER_ID = 1;
 	private static final long NEW_ASSIGNEE_USER_ID = 2;
@@ -188,7 +189,7 @@ public class TicketServiceImplTest {
 	@Test(expected=TicketNotFoundException.class)
 	public void testUpdateTicketWithInvalidTicketId() {
 		Ticket ticket = new Ticket();
-		ticket.setId(111);
+		ticket.setId(MOCK_INVALID_TICKET_ID);
 		
 		ticketServiceImpl.updateTicket(ticket);
 	}
@@ -302,7 +303,19 @@ public class TicketServiceImplTest {
 	public void testCreateNullTicket() {
 		ticketServiceImpl.createTicket(null);
 	}
-		
+
+	@Test
+	public void testRemoveTicketPriority() {
+		Ticket ticket = ticketServiceImpl.removePriority(MOCK_UPDATED_TICKET_ID);
+		assertNotNull("Priority should be 'None', not null", ticket.getPriority());
+		assertEquals("Removing a priority should have set the priority to None", MOCK_NONE_PRIORITY.getValue(), ticket.getPriority().getValue());
+	}
+
+	@Test(expected=TicketNotFoundException.class)
+	public void testRemoveTicketPriorityInvalidId() {
+		ticketServiceImpl.removePriority(MOCK_INVALID_TICKET_ID);
+	}
+
 	private static TicketType getMockFeatureType() {
 		return new TicketType(1, "Feature");
 	}

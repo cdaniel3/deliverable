@@ -17,5 +17,7 @@ public interface TicketService {
 	
 	public Ticket createTicket(Ticket ticket);
 	
-	public Ticket unassignTicket(Long ticketId);	
+	public Ticket unassignTicket(Long ticketId);
+
+	public Ticket removePriority(Long ticketId);
 }

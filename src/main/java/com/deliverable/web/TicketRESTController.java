@@ -57,6 +57,11 @@ public class TicketRESTController {
 		return getTicketService().unassignTicket(ticketId);
 	}
 
+	@RequestMapping(method=RequestMethod.DELETE, value="/{ticketId}/priority")
+	public Ticket removePriority(@PathVariable Long ticketId) {
+		return getTicketService().removePriority(ticketId);
+	}
+
 	public TicketService getTicketService() {
 		return ticketService;
 	}

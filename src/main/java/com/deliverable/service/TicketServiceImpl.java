@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ import com.deliverable.repositories.TicketRepository;
 @Service
 public class TicketServiceImpl implements TicketService {
 	
+	private Log log = LogFactory.getLog(TicketServiceImpl.class);
+
 	@Autowired
 	private TicketRepository ticketRepository;
 		
@@ -159,6 +163,25 @@ public class TicketServiceImpl implements TicketService {
 		return getTicketRepository().save(entityTicket);
 	}
 
+	@Override
+	public Ticket removePriority(Long ticketId) {
+		if (ticketId == null) {
+			throw new InvalidTicketException("Ticket must not be null");
+		}
+		Ticket entityTicket = ticketRepository.findTicketById(ticketId);
+		if (entityTicket == null) {
+			throw new TicketNotFoundException("Ticket not found. Id: " + ticketId);
+		}
+		Priority defaultPriority = getPriorityRepository().findPriorityByValue(getTicketConfiguration().getDefaultPriority());
+		if (defaultPriority != null) {
+			entityTicket.setPriority(defaultPriority);
+		} else {
+			log.error("Removing a ticket's priority failed. Priority repository returned null value when retrieving by priority name: " +
+					getTicketConfiguration().getDefaultPriority());
+		}
+
+		return getTicketRepository().save(entityTicket);
+	}
 
 	public List<Transition> getTransitions(Long ticketTypeId, Long originStatusId) {
 		return getTicketRepository().getTransitions(ticketTypeId, originStatusId);
@@ -203,4 +226,5 @@ public class TicketServiceImpl implements TicketService {
 	public void setTicketConfiguration(TicketConfiguration ticketConfiguration) {
 		this.ticketConfiguration = ticketConfiguration;
 	}
+
 }

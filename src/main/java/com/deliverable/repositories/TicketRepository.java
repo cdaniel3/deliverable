@@ -10,5 +10,4 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketRep
 	public Ticket findTicketById(Long id);
 	
 	public List<Ticket> findTicketByStatusValueNotOrderByPriorityWeightDescDateCreated(String statusValue);	
-	
 }
