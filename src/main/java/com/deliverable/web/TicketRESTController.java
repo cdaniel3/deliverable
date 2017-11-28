@@ -49,7 +49,7 @@ public class TicketRESTController {
 	@RequestMapping(method=RequestMethod.PUT, value="/{ticketId}")
 	public Ticket updateTicket(@PathVariable Long ticketId, @RequestBody Ticket updatedTicket) {
 		updatedTicket.setId(ticketId);
-		return getTicketService().updateTicket(updatedTicket);
+		return getTicketService().updateTicket(updatedTicket);		
 	}
 
 	public TicketService getTicketService() {

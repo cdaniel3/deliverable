@@ -17,9 +17,9 @@ public class TicketRepositoryImpl implements TicketRepositoryBase {
 	
 	private JdbcTemplate jdbcTemplate;
 	
-	private static final String SELECT_TRANSITIONS_SQL = "SELECT TRANS.NAME AS TRANSITION_NAME, TRANS.DEST_STATUS, SDEST.NAME AS STATUS_NAME "
-			+ "FROM TRANSITION TRANS JOIN STATUS SDEST ON SDEST.STATUS_ID = TRANS.DEST_STATUS "
-			+ "WHERE TRANS.TICKETTYPE_ID = ? AND TRANS.ORIGIN_STATUS = ?";
+	private static final String SELECT_TRANSITIONS_SQL = "select trans.name as transition_name, trans.dest_status, sdest.name as status_name " + 
+			"from transition trans join status sdest on sdest.status_id = trans.dest_status " + 
+			"where trans.tickettype_id = ? and trans.origin_status = ?";
 
 	
 	@Override
@@ -34,10 +34,10 @@ public class TicketRepositoryImpl implements TicketRepositoryBase {
 		return getJdbcTemplate().query(SELECT_TRANSITIONS_SQL, new Object[]{ticketTypeId, originStatusId}, new RowMapper<Transition>() {
 			@Override
 			public Transition mapRow(ResultSet rs, int rownum) throws SQLException {
-				int destStatusId = rs.getInt("DEST_STATUS");
-				String destStatusName = rs.getString("STATUS_NAME");
+				int destStatusId = rs.getInt("dest_status");
+				String destStatusName = rs.getString("status_name");
 				Status destStatus = new Status(destStatusId, destStatusName);
-				return new Transition(rs.getString("TRANSITION_NAME"), destStatus);
+				return new Transition(rs.getString("transition_name"), destStatus);
 			}
 		});
 	}

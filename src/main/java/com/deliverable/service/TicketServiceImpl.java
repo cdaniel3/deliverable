@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.deliverable.config.TicketConfiguration;
 import com.deliverable.exceptions.InvalidTicketException;
+import com.deliverable.exceptions.TicketNotFoundException;
 import com.deliverable.model.Priority;
+import com.deliverable.model.Status;
 import com.deliverable.model.Ticket;
 import com.deliverable.model.TicketType;
 import com.deliverable.model.Transition;
@@ -21,7 +23,7 @@ import com.deliverable.repositories.TicketRepository;
 
 @Service
 public class TicketServiceImpl implements TicketService {
-
+	
 	@Autowired
 	private TicketRepository ticketRepository;
 		
@@ -53,7 +55,12 @@ public class TicketServiceImpl implements TicketService {
 		if (requestedTicket.getName() == null || requestedTicket.getTicketType() == null) {
 			throw new InvalidTicketException("Ticket name and ticket type must be specified when creating a new ticket");
 		}
-		Ticket newTicket = parseTicket(requestedTicket, new Ticket());
+		Ticket newTicket = parseBasicTicketFields(requestedTicket, new Ticket());
+		// TicketType is required for a new ticket
+		TicketType ticketType = requestedTicket.getTicketType();	
+		TicketType ticketTypeRef = getEntityManager().getReference(TicketType.class, ticketType.getId());
+		newTicket.setTicketType(ticketTypeRef);			
+		
 		if (newTicket.getDescription() == null) {
 			newTicket.setDescription("");
 		}
@@ -72,44 +79,73 @@ public class TicketServiceImpl implements TicketService {
 			throw new InvalidTicketException("Ticket must not be null");
 		}
 		Ticket entityTicket = ticketRepository.findTicketById(requestedTicket.getId());
-		Ticket updatedTicket = parseTicket(requestedTicket, entityTicket);
+		if (entityTicket == null) {
+			throw new TicketNotFoundException("Ticket not found. Id: " + requestedTicket.getId());
+		}
+		Ticket updatedTicket = parseBasicTicketFields(requestedTicket, entityTicket);
 		
-//		updatedTicket.setStatus(status);			// handle transitions
-				
+		Status requestedStatus = requestedTicket.getStatus();
+		if (requestedStatus != null) {
+			Status validatedStatus = validateStatus(entityTicket, requestedStatus);
+			if (validatedStatus != null) {
+				updatedTicket.setStatus(validatedStatus);
+			} else {
+				throw new InvalidTicketException("Status update not allowed");
+			}
+		}
+		
 		return getTicketRepository().save(updatedTicket);
 	}
-		
-	private Ticket parseTicket(Ticket source, Ticket destination) {
-		String name = source.getName();
+
+	private Ticket parseBasicTicketFields(Ticket requestedTicket, Ticket destination) {
+		String name = requestedTicket.getName();
 		if (name != null) {
 			destination.setName(name);
 		}
 		
-		TicketType ticketType = source.getTicketType();
-		if (ticketType != null) {
-			TicketType ticketTypeRef = getEntityManager().getReference(TicketType.class, ticketType.getId());
-			destination.setTicketType(ticketTypeRef);			
-		}
-		
-		String description = source.getDescription();
+		String description = requestedTicket.getDescription();
 		if (description != null) {
 			destination.setDescription(description);
 		}
 		
-		Priority priority = source.getPriority();
-		if (priority != null) {
-			Priority priorityRef = getEntityManager().getReference(Priority.class, priority.getId());
-			destination.setPriority(priorityRef);
+		Priority requestedPriority = requestedTicket.getPriority();
+		if (requestedPriority != null) {
+			Priority priority = getEntityManager().getReference(Priority.class, requestedPriority.getId());
+			destination.setPriority(priority);
 		}
 		
-		User assignee = source.getAssignee();
+		User assignee = requestedTicket.getAssignee();
 		if (assignee != null) {
 			User newAssignee = getEntityManager().getReference(User.class, assignee.getId());
 			destination.setAssignee(newAssignee);
+			
 		}
 		
 		return destination;
 	}
+	
+
+	
+	private Status validateStatus(Ticket ticket, Status requestedStatus) {
+		Status status = null;
+		if (ticket != null && requestedStatus != null) {
+			TicketType ticketType = ticket.getTicketType();
+			Status currentStatus = ticket.getStatus();
+			if (ticketType != null && currentStatus != null) {
+				List<Transition> transitions = getTransitions(ticketType.getId(), currentStatus.getId());
+				if (transitions != null) {
+					for (Transition transition : transitions) {
+						if (transition.getDestinationStatus().getId() == requestedStatus.getId()) {
+							status = transition.getDestinationStatus();
+							break;
+						}
+					}
+				}
+			}
+		}
+		return status;
+	}
+
 
 	public List<Transition> getTransitions(Long ticketTypeId, Long originStatusId) {
 		return getTicketRepository().getTransitions(ticketTypeId, originStatusId);
