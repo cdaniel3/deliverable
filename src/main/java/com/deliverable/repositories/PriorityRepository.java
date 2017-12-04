@@ -8,6 +8,4 @@ public interface PriorityRepository extends JpaRepository<Priority, Long> {
 	
 	public Priority findPriorityByValue(String value);
 	
-	public Priority findPriorityById(Long id);
-	
 }

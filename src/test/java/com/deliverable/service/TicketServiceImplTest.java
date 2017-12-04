@@ -117,7 +117,7 @@ public class TicketServiceImplTest {
 		existingTicket.setAssignee(new User(CURRENT_ASSIGNEE_USER_ID, "initialUser"));
 		existingTicket.setPriority(MOCK_NONE_PRIORITY);
 		existingTicket.setStatus(MOCK_OPEN_STATUS);
-		when(ticketRepository.findTicketById(new Long(MOCK_UPDATED_TICKET_ID))).thenReturn(existingTicket);
+		when(ticketRepository.findOne(new Long(MOCK_UPDATED_TICKET_ID))).thenReturn(existingTicket);
 	}
 	
 	private void setupMockTransitions() {

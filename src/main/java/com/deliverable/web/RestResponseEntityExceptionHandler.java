@@ -16,6 +16,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.deliverable.exceptions.InvalidTicketException;
+import com.deliverable.exceptions.PriorityNotFoundException;
 import com.deliverable.exceptions.TicketNotFoundException;
 
 @ControllerAdvice
@@ -33,8 +34,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 		return getResponseEntity(HttpStatus.BAD_REQUEST, "Constraint violation occurred");
 	}
 	
-	@ExceptionHandler({ TicketNotFoundException.class })
-	public ResponseEntity<Map<String,Object>> handleTicketNotFoundException(Exception ex, WebRequest request) {
+	@ExceptionHandler({ TicketNotFoundException.class, PriorityNotFoundException.class })
+	public ResponseEntity<Map<String,Object>> handleNotFoundException(Exception ex, WebRequest request) {
 		return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
 	}
 		

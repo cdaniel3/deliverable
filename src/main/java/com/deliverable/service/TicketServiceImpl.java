@@ -44,7 +44,7 @@ public class TicketServiceImpl implements TicketService {
 	private TicketConfiguration ticketConfiguration;
 
 	public Ticket getTicket(Long ticketId) {
-		return getTicketRepository().findTicketById(ticketId);
+		return getTicketRepository().findOne(ticketId);
 	}
 	
 	public List<Ticket> getUnresolvedTickets() {
@@ -82,7 +82,7 @@ public class TicketServiceImpl implements TicketService {
 		if (requestedTicket == null) {
 			throw new InvalidTicketException("Ticket must not be null");
 		}
-		Ticket entityTicket = ticketRepository.findTicketById(requestedTicket.getId());
+		Ticket entityTicket = ticketRepository.findOne(requestedTicket.getId());
 		if (entityTicket == null) {
 			throw new TicketNotFoundException("Ticket not found. Id: " + requestedTicket.getId());
 		}
@@ -155,7 +155,7 @@ public class TicketServiceImpl implements TicketService {
 		if (ticketId == null) {
 			throw new InvalidTicketException("Ticket must not be null");
 		}
-		Ticket entityTicket = ticketRepository.findTicketById(ticketId);
+		Ticket entityTicket = ticketRepository.findOne(ticketId);
 		if (entityTicket == null) {
 			throw new TicketNotFoundException("Ticket not found. Id: " + ticketId);
 		}
@@ -168,7 +168,7 @@ public class TicketServiceImpl implements TicketService {
 		if (ticketId == null) {
 			throw new InvalidTicketException("Ticket must not be null");
 		}
-		Ticket entityTicket = ticketRepository.findTicketById(ticketId);
+		Ticket entityTicket = ticketRepository.findOne(ticketId);
 		if (entityTicket == null) {
 			throw new TicketNotFoundException("Ticket not found. Id: " + ticketId);
 		}
