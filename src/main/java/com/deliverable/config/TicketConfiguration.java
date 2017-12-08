@@ -1,15 +1,13 @@
 package com.deliverable.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+@Configuration
+@ConfigurationProperties(prefix="ticket.config")
 public class TicketConfiguration {
 
-	@Value("${deliverable.config.default.status}")
 	private String defaultStatus;
-	
-	@Value("${deliverable.config.default.priority}")
 	private String defaultPriority;
 
 	public String getDefaultStatus() {
