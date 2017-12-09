@@ -16,7 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import com.deliverable.model.User;
 import com.deliverable.repositories.UserRepository;
@@ -41,14 +41,17 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
 	@Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     	log.trace("authenticate(Authentication authentication()");
-        Assert.notNull(authentication, GENERIC_AUTH_MSG);
+    	if (StringUtils.isEmpty(authentication)) {
+    		throw new IllegalArgumentException(GENERIC_AUTH_MSG);
+    	}
 
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
-        Assert.notNull(username, GENERIC_AUTH_MSG);
-        Assert.notNull(password, GENERIC_AUTH_MSG);
-        
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) { 
+        	throw new IllegalArgumentException(GENERIC_AUTH_MSG);
+        }
+                
         User user = userRepository.findUserByUsername(username);
         if (user == null) {
         	throw new UsernameNotFoundException("User not found: " + username);

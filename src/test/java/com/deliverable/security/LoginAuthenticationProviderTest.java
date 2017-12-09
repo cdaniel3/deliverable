@@ -1,12 +1,14 @@
 package com.deliverable.security;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +62,6 @@ public class LoginAuthenticationProviderTest {
 		when(noUserAuthentication.getCredentials()).thenReturn("password");
 		when(badAuthObjectAuthentication.getCredentials()).thenReturn(null);
 		
-		
 		when(userRepo.findUserByUsername("user1")).thenReturn(validUserEntity);
 		when(userRepo.findUserByUsername("admin")).thenReturn(validAdminUserEntity);
 		when(userRepo.findUserByUsername("user-doesnt-exist")).thenReturn(null);
@@ -85,6 +86,7 @@ public class LoginAuthenticationProviderTest {
 	public void testAuthenticateSuccessfulValidUser() {
 		Authentication auth = loginAuthenticationProvider.authenticate(this.validAuthentication);
 		assertThat("User should be authenticated", auth.isAuthenticated(), is(true));
+		assertThat("Authorities should be null for user with no roles", auth.getAuthorities(), anyOf(IsEmptyCollection.empty(), nullValue()));
 	}
 	
 	@Test

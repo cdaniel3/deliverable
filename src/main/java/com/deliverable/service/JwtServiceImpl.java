@@ -31,9 +31,13 @@ public class JwtServiceImpl implements JwtService {
 	
 	private final static String REFRESH_TOKEN_AUTHORITY = "ROLE_REFRESH_TOKEN";
 	private Log log = LogFactory.getLog(JwtServiceImpl.class);
+
+	private JwtSettings settings;
 	
 	@Autowired
-	private JwtSettings settings;
+	public JwtServiceImpl(JwtSettings jwtSettings) {
+		this.settings = jwtSettings;
+	}
 	
 	@Override
 	public String createAccessToken(String username, Collection<? extends GrantedAuthority> authorities) {

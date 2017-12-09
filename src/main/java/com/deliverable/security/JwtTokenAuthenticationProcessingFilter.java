@@ -29,7 +29,6 @@ public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticati
         super(matcher);
         this.failureHandler = failureHandler;
         this.tokenExtractor = tokenExtractor;
-        log.trace("constructor");
     }
 
     @Override
@@ -37,8 +36,6 @@ public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticati
             throws AuthenticationException, IOException, ServletException {
     	log.trace("attemptAuthentication()");
         String token = tokenExtractor.extractAuthHeaderToken(request);
-        
-        log.info("Authorization token: " + token);
         return getAuthenticationManager().authenticate(new SimpleJwtAuthToken(token));
     }
 
@@ -55,8 +52,7 @@ public class JwtTokenAuthenticationProcessingFilter extends AbstractAuthenticati
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException failed) throws IOException, ServletException {
-    	log.trace("unsuccessfulAuthentication()");
-    	log.error("failure: " + failed.getMessage());
+    	log.trace("unsuccessfulAuthentication()");    	
         SecurityContextHolder.clearContext();
         failureHandler.onAuthenticationFailure(request, response, failed);
     }
