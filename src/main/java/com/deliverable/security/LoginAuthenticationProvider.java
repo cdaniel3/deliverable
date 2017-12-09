@@ -22,31 +22,40 @@ import com.deliverable.model.User;
 import com.deliverable.repositories.UserRepository;
 
 @Component
-public class AjaxAuthenticationProvider implements AuthenticationProvider {
+public class LoginAuthenticationProvider implements AuthenticationProvider {
 	
-	@Autowired
+	private static final String GENERIC_AUTH_MSG = "Authentication failed";
+	
     private PasswordEncoder encoder;
-	
-	@Autowired
-    private UserRepository userRepository;
-    
-    private Log log = LogFactory.getLog(AjaxAuthenticationProvider.class);
 
-    @Override
+    private UserRepository userRepository;
+
+    private Log log = LogFactory.getLog(LoginAuthenticationProvider.class);
+
+    @Autowired
+    public LoginAuthenticationProvider(PasswordEncoder encoder, UserRepository userRepository) {
+		this.encoder = encoder;
+		this.userRepository = userRepository;
+	}
+
+	@Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     	log.trace("authenticate(Authentication authentication()");
-        Assert.notNull(authentication, "No authentication data provided");
+        Assert.notNull(authentication, GENERIC_AUTH_MSG);
 
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
+        Assert.notNull(username, GENERIC_AUTH_MSG);
+        Assert.notNull(password, GENERIC_AUTH_MSG);
+        
         User user = userRepository.findUserByUsername(username);
         if (user == null) {
         	throw new UsernameNotFoundException("User not found: " + username);
         }	
         
         if (!encoder.matches(password, user.getPassword())) {
-            throw new BadCredentialsException("Authentication Failed. Username or Password not valid.");
+            throw new BadCredentialsException("Authentication failure - bad credentials");
         }
         
         List<GrantedAuthority> authorities = null;

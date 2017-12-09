@@ -18,8 +18,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.deliverable.security.AjaxAuthenticationProvider;
-import com.deliverable.security.AjaxLoginProcessingFilter;
+import com.deliverable.security.LoginAuthenticationProvider;
+import com.deliverable.security.LoginProcessingFilter;
 import com.deliverable.security.JwtHeaderTokenExtractor;
 import com.deliverable.security.JwtTokenAuthenticationProcessingFilter;
 import com.deliverable.security.SimpleJwtAuthProvider;
@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationFailureHandler failureHandler;
     
     @Autowired
-    private AjaxAuthenticationProvider ajaxAuthenticationProvider;
+    private LoginAuthenticationProvider loginAuthenticationProvider;
     @Autowired
     private SimpleJwtAuthProvider simpleJwtAuthProvider;
     @Autowired
@@ -62,8 +62,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     		new AntPathRequestMatcher(REFRESH_TOKEN_URL)   		
     };
 
-    private AjaxLoginProcessingFilter buildAjaxLoginProcessingFilter(String loginEntryPoint) throws Exception {
-        AjaxLoginProcessingFilter filter = new AjaxLoginProcessingFilter(loginEntryPoint, successHandler, failureHandler, objectMapper);
+    private LoginProcessingFilter buildLoginProcessingFilter(String loginEntryPoint) throws Exception {
+        LoginProcessingFilter filter = new LoginProcessingFilter(loginEntryPoint, successHandler, failureHandler, objectMapper);
         filter.setAuthenticationManager(authenticationManager);
         return filter;
     }
@@ -90,7 +90,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(ajaxAuthenticationProvider);
+        auth.authenticationProvider(loginAuthenticationProvider);
         auth.authenticationProvider(simpleJwtAuthProvider);
     }
     
@@ -115,7 +115,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(API_ROOT_URL).authenticated() // Protected API End-points
             .and()
 //                .addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(buildAjaxLoginProcessingFilter(AUTHENTICATION_URL), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(buildLoginProcessingFilter(AUTHENTICATION_URL), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

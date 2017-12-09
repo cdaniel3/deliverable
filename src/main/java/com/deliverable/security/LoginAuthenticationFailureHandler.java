@@ -19,11 +19,11 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-public class AjaxAwareAuthenticationFailureHandler implements AuthenticationFailureHandler {
+public class LoginAuthenticationFailureHandler implements AuthenticationFailureHandler {
     private final ObjectMapper mapper;
     
     @Autowired
-    public AjaxAwareAuthenticationFailureHandler(ObjectMapper mapper) {
+    public LoginAuthenticationFailureHandler(ObjectMapper mapper) {
         this.mapper = mapper;
     }	
     
@@ -37,7 +37,7 @@ public class AjaxAwareAuthenticationFailureHandler implements AuthenticationFail
 		Map<String, Object> errorMap = new HashMap<String, Object>();
 		errorMap.put("status", HttpStatus.UNAUTHORIZED);
 		errorMap.put("timestamp", new Date());
-		errorMap.put("message", e.getMessage());
+		errorMap.put("message", e.getMessage());		// replace with generic error msg for any Auth failures
 		
 		mapper.writeValue(response.getWriter(), errorMap);
 	}

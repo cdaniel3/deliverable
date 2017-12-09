@@ -68,10 +68,11 @@ public class TicketServiceImplTest {
 	@Mock
 	private PriorityRepository priorityRepository;
 	
-	private TicketServiceImpl ticketServiceImpl = new TicketServiceImpl();
+	private TicketServiceImpl ticketServiceImpl;
 
 	@Before
 	public void setupMock() {
+		ticketServiceImpl = new TicketServiceImpl();
 		MockitoAnnotations.initMocks(this);
 		ticketServiceImpl.setTicketRepository(ticketRepository);
 		ticketServiceImpl.setStatusRepository(statusRepository);

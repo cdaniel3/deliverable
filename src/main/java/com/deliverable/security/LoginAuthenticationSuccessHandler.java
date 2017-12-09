@@ -21,7 +21,7 @@ import com.deliverable.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-public class AjaxAwareAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 	
 	@Autowired
     private ObjectMapper mapper;

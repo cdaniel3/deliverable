@@ -21,15 +21,15 @@ import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
-    private static Logger log = LoggerFactory.getLogger(AjaxLoginProcessingFilter.class);
+public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
+    private static Logger log = LoggerFactory.getLogger(LoginProcessingFilter.class);
 
     private final AuthenticationSuccessHandler successHandler;
     private final AuthenticationFailureHandler failureHandler;
 
     private final ObjectMapper objectMapper;
     
-    public AjaxLoginProcessingFilter(String defaultProcessUrl, AuthenticationSuccessHandler successHandler, 
+    public LoginProcessingFilter(String defaultProcessUrl, AuthenticationSuccessHandler successHandler, 
             AuthenticationFailureHandler failureHandler, ObjectMapper mapper) {
         super(defaultProcessUrl);
         this.successHandler = successHandler;
