@@ -40,6 +40,11 @@ public class JwtServiceImpl implements JwtService {
 	}
 	
 	@Override
+	public String createAccessToken(String username) {
+		return createAccessToken(username, null);
+	}
+
+	@Override
 	public String createAccessToken(String username, Collection<? extends GrantedAuthority> authorities) {
 		if (StringUtils.isEmpty(username)) { 
     		throw new IllegalArgumentException("Cannot create JWT Token without username");
@@ -86,10 +91,10 @@ public class JwtServiceImpl implements JwtService {
 		try {
             return Jwts.parser().setSigningKey(settings.getTokenSigningKey()).parseClaimsJws(token);
         } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | SignatureException ex) {
-            log.error("Invalid JWT Token", ex);
+            log.info("Invalid JWT Token: " + ex.getMessage());
             throw new BadCredentialsException("Invalid JWT token: ", ex);
         } catch (ExpiredJwtException expiredEx) {
-            log.info("JWT Token is expired", expiredEx);
+            log.info("JWT Token is expired: " + expiredEx);
             throw new JwtExpiredTokenException("JWT Token expired", expiredEx);
         }
 	}

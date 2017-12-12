@@ -12,16 +12,15 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.deliverable.security.LoginAuthenticationProvider;
-import com.deliverable.security.LoginProcessingFilter;
 import com.deliverable.security.JwtHeaderTokenExtractor;
 import com.deliverable.security.JwtTokenAuthenticationProcessingFilter;
+import com.deliverable.security.LoginAuthenticationProvider;
+import com.deliverable.security.LoginProcessingFilter;
 import com.deliverable.security.SimpleJwtAuthProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,12 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private ObjectMapper objectMapper;
     @Autowired
     private JwtHeaderTokenExtractor tokenExtractor;
-    
-    @Bean
-    protected BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    
+
     private AntPathRequestMatcher[] requestMatchers = {
     		new AntPathRequestMatcher(AUTHENTICATION_URL),
     		new AntPathRequestMatcher(REFRESH_TOKEN_URL)   		
