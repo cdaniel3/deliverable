@@ -31,6 +31,7 @@ public class User {
 	private String password;
 	
 	@Transient
+	@JsonIgnore
 	private List<String> roles;
 	
 	public User() {
