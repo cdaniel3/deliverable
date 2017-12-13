@@ -79,19 +79,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
     	log.trace("configure(HttpSecurity http)");
         http
-            .csrf().disable() // We don't need CSRF for JWT based authentication
-            .exceptionHandling()
-            .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
+            .csrf().disable()			// Disabling CSRF since Jwt is used for user operations
+            .sessionManagement()
+            	.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .authorizeRequests()
                 .antMatchers(AUTHENTICATION_URL, REFRESH_TOKEN_URL)
                 .permitAll()
             .and()
                 .authorizeRequests()
-                .antMatchers(API_ROOT_URL).authenticated() // Protected API End-points
+                .antMatchers(API_ROOT_URL)
+                .authenticated()
             .and()
                 .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
     }
