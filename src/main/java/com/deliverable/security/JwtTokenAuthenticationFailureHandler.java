@@ -19,11 +19,11 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
-public class LoginAuthenticationFailureHandler implements AuthenticationFailureHandler {
+public class JwtTokenAuthenticationFailureHandler implements AuthenticationFailureHandler {
     private final ObjectMapper mapper;
     
     @Autowired
-    public LoginAuthenticationFailureHandler(ObjectMapper mapper) {
+    public JwtTokenAuthenticationFailureHandler(ObjectMapper mapper) {
         this.mapper = mapper;
     }	
     

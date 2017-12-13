@@ -10,6 +10,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -37,6 +40,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	@ExceptionHandler({ TicketNotFoundException.class, PriorityNotFoundException.class })
 	public ResponseEntity<Map<String,Object>> handleNotFoundException(Exception ex, WebRequest request) {
 		return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
+	}
+	
+	@ExceptionHandler({ AuthenticationServiceException.class, UsernameNotFoundException.class, BadCredentialsException.class })
+	public ResponseEntity<Map<String,Object>> handleAuthenticationExceptions(Exception ex, WebRequest request) {
+		return getResponseEntity(HttpStatus.UNAUTHORIZED, "Unauthorized request");
 	}
 		
 	private ResponseEntity<Map<String,Object>> getResponseEntity(HttpStatus httpStatus, String msg) {

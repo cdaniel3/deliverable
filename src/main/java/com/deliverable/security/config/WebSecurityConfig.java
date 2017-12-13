@@ -13,16 +13,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.deliverable.security.JwtHeaderTokenExtractor;
 import com.deliverable.security.JwtTokenAuthenticationProcessingFilter;
 import com.deliverable.security.LoginAuthenticationProvider;
-import com.deliverable.security.LoginProcessingFilter;
 import com.deliverable.security.SimpleJwtAuthProvider;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @EnableWebSecurity
@@ -35,8 +32,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String API_ROOT_URL = "/**";
 
     @Autowired
-    private AuthenticationSuccessHandler successHandler;
-    @Autowired
     private AuthenticationFailureHandler failureHandler;
     
     @Autowired
@@ -47,20 +42,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
     private JwtHeaderTokenExtractor tokenExtractor;
 
     private AntPathRequestMatcher[] requestMatchers = {
     		new AntPathRequestMatcher(AUTHENTICATION_URL),
     		new AntPathRequestMatcher(REFRESH_TOKEN_URL)   		
     };
-
-    private LoginProcessingFilter buildLoginProcessingFilter(String loginEntryPoint) throws Exception {
-        LoginProcessingFilter filter = new LoginProcessingFilter(loginEntryPoint, successHandler, failureHandler, objectMapper);
-        filter.setAuthenticationManager(authenticationManager);
-        return filter;
-    }
 
     private JwtTokenAuthenticationProcessingFilter buildJwtTokenAuthenticationProcessingFilter() throws Exception {
         JwtTokenAuthenticationProcessingFilter filter
@@ -94,8 +81,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable() // We don't need CSRF for JWT based authentication
             .exceptionHandling()
-//            .authenticationEntryPoint(this.authenticationEntryPoint)
-
             .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -108,8 +93,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(API_ROOT_URL).authenticated() // Protected API End-points
             .and()
-//                .addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(buildLoginProcessingFilter(AUTHENTICATION_URL), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

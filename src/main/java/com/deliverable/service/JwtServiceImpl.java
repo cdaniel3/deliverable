@@ -92,7 +92,7 @@ public class JwtServiceImpl implements JwtService {
             return Jwts.parser().setSigningKey(settings.getTokenSigningKey()).parseClaimsJws(token);
         } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | SignatureException ex) {
             log.info("Invalid JWT Token: " + ex.getMessage());
-            throw new BadCredentialsException("Invalid JWT token: ", ex);
+            throw new BadCredentialsException("Invalid JWT token", ex);
         } catch (ExpiredJwtException expiredEx) {
             log.info("JWT Token is expired: " + expiredEx);
             throw new JwtExpiredTokenException("JWT Token expired", expiredEx);
