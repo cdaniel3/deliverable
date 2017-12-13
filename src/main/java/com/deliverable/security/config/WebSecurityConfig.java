@@ -26,7 +26,6 @@ import com.deliverable.security.SimpleJwtAuthProvider;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private Log log = LogFactory.getLog(WebSecurityConfig.class);
-    public static final String AUTHENTICATION_HEADER_NAME = "Authorization";
     public static final String AUTHENTICATION_URL = "/auth/login";
     public static final String REFRESH_TOKEN_URL = "/auth/token";
     public static final String API_ROOT_URL = "/**";
