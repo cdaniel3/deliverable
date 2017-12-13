@@ -12,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.deliverable.service.JwtService;
 
@@ -24,20 +25,31 @@ public class SimpleJwtAuthProvider implements AuthenticationProvider {
 	@Autowired
 	private JwtService jwtService;
     private Log log = LogFactory.getLog(SimpleJwtAuthProvider.class);
-        
+
+    @Autowired
+    public SimpleJwtAuthProvider(JwtService jwtService) {
+    	this.jwtService = jwtService;
+	}
+
     @SuppressWarnings("unchecked")
 	@Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     	log.trace("SimpleJwtAuthProvider authenticate(Authentication authentication)");
+    	if (StringUtils.isEmpty(authentication)) {
+    		throw new IllegalArgumentException("'authentication' should not be null");
+    	}
         String token = (String) authentication.getCredentials();
         Jws<Claims> jwsClaims = jwtService.parseClaims(token);
-        
+
+        List<GrantedAuthority> authorities = null;
         String subject = jwsClaims.getBody().getSubject();        
         List<String> scopes = jwsClaims.getBody().get("scopes", List.class);
-        List<GrantedAuthority> authorities = scopes.stream()
-            .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toList());
-                
+        if (scopes != null) {
+	         authorities = scopes.stream()
+	            .map(SimpleGrantedAuthority::new)
+	            .collect(Collectors.toList());
+        }
+
         return new SimpleJwtAuthToken(subject, token, authorities);
     }
 
