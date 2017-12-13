@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -46,13 +47,18 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	public ResponseEntity<Map<String,Object>> handleAuthenticationExceptions(Exception ex, WebRequest request) {
 		return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
 	}
+	
+	@ExceptionHandler({ AccessDeniedException.class })
+	public ResponseEntity<Map<String,Object>> handleAccessDeniedException(Exception ex, WebRequest request) {
+		return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
+	}
 			
 	private ResponseEntity<Map<String,Object>> getResponseEntity(HttpStatus httpStatus, String msg) {
 		log.info("Exception occurred related to client request. Message will be included in the response: " + msg);
 		
 		Map<String, Object> errors = new HashMap<String, Object>();
 		errors.put("timestamp", new Date().getTime());
-		errors.put("error", httpStatus);
+		errors.put("error", httpStatus.getReasonPhrase());		
 		errors.put("status", httpStatus.value());
 		errors.put("message", msg);
 		return new ResponseEntity<Map<String,Object>>(

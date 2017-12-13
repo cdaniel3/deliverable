@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.deliverable.config.TicketConfiguration;
@@ -181,6 +182,15 @@ public class TicketServiceImpl implements TicketService {
 		}
 
 		return getTicketRepository().save(entityTicket);
+	}
+
+	@Override
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public void removeTicket(Long ticketId) {		
+		if (ticketId == null) {
+			throw new InvalidTicketException("Ticket must not be null");
+		}
+		getTicketRepository().delete(ticketId);
 	}
 
 	public List<Transition> getTransitions(Long ticketTypeId, Long originStatusId) {

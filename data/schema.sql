@@ -23,10 +23,20 @@ create table priority (priority_id int not null auto_increment, name varchar(30)
 create table status (status_id int not null auto_increment, name varchar(30) not null, primary key (status_id));
 
 -- create users table
-create table users (user_id int not null auto_increment, username varchar(50) not null, password varchar(60) null default null, enabled tinyint(1) not null, primary key (user_id));
+create table users (
+  user_id int not null auto_increment,
+  username varchar(50) not null,
+  password varchar(60) null default null,
+  enabled tinyint(1) not null,
+  primary key (user_id));
 
 -- create authorities table
-create table authorities (user_id int not null, authority varchar(50) not null, foreign key (user_id) references users(user_id));
+create table roles (
+  role_id int not null auto_increment,
+  user_id int not null,
+  role_name varchar(50) not null,
+  primary key (role_id),
+  foreign key (user_id) references users(user_id));
 
 -- create tickets table
 create table tickets (
@@ -39,8 +49,7 @@ create table tickets (
   status_id int not null,
   date_created timestamp default current_timestamp,
   primary key (ticket_id),
-  foreign key (assignee_id)
-  references users(user_id),
+  foreign key (assignee_id) references users(user_id),
   foreign key (tickettype_id) references tickettype(tickettype_id),
   foreign key (priority_id) references priority(priority_id),
   foreign key (status_id) references status(status_id));

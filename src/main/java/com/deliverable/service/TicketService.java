@@ -20,4 +20,6 @@ public interface TicketService {
 	public Ticket unassignTicket(Long ticketId);
 
 	public Ticket removePriority(Long ticketId);
+	
+	public void removeTicket(Long ticketId);
 }

@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deliverable.model.Role;
 import com.deliverable.model.User;
 import com.deliverable.repositories.UserRepository;
 import com.deliverable.security.JwtHeaderTokenExtractor;
@@ -86,10 +87,16 @@ public class AuthController {
         }
 
         List<GrantedAuthority> authorities = null;
-        List<String> roles = user.getRoles();
+        List<Role> roles = user.getRoles();
         if (roles != null) {
         	authorities = roles.stream()
-        			.map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+        			.map(role -> {
+        				if (role != null) {
+                    		return new SimpleGrantedAuthority(role.getRoleName());
+                    	}
+                    	return null;        				
+        			}).collect(Collectors.toList());
+        			
         }
         String jwtToken = jwtService.createAccessToken(user.getUsername(), authorities);        
         log.debug("jwtToken: " + jwtToken);

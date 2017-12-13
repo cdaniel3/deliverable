@@ -22,6 +22,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.deliverable.model.Role;
 import com.deliverable.model.User;
 import com.deliverable.repositories.UserRepository;
 
@@ -32,11 +33,14 @@ public class LoginAuthenticationProviderTest {
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 	private User validUserEntity;
 	private User validAdminUserEntity;
+	private User validUserInvalidRolesEntity;
 	
 	@Mock
 	private UserRepository userRepo;
 	@Mock
 	private Authentication validAuthentication;
+	@Mock
+	private Authentication validUserInvalidRolesAuthentication;
 	@Mock
 	private Authentication validAdminAuthentication;
 	@Mock
@@ -56,16 +60,19 @@ public class LoginAuthenticationProviderTest {
 		when(invalidAuthentication.getPrincipal()).thenReturn("user1");
 		when(noUserAuthentication.getPrincipal()).thenReturn("user-doesnt-exist");
 		when(badAuthObjectAuthentication.getPrincipal()).thenReturn("user1");
+		when(validUserInvalidRolesAuthentication.getPrincipal()).thenReturn("userInvalidRoles");
 		
 		when(validAuthentication.getCredentials()).thenReturn("password");
 		when(validAdminAuthentication.getCredentials()).thenReturn("adminPassword");
 		when(invalidAuthentication.getCredentials()).thenReturn("incorrectPassword");
 		when(noUserAuthentication.getCredentials()).thenReturn("password");
 		when(badAuthObjectAuthentication.getCredentials()).thenReturn(null);
+		when(validUserInvalidRolesAuthentication.getCredentials()).thenReturn("password");
 		
 		when(userRepo.findUserByUsername("user1")).thenReturn(validUserEntity);
 		when(userRepo.findUserByUsername("admin")).thenReturn(validAdminUserEntity);
 		when(userRepo.findUserByUsername("user-doesnt-exist")).thenReturn(null);
+		when(userRepo.findUserByUsername("userInvalidRoles")).thenReturn(validUserInvalidRolesEntity);
 		
 		loginAuthenticationProvider = new LoginAuthenticationProvider(this.encoder, this.userRepo);
 	}
@@ -79,8 +86,14 @@ public class LoginAuthenticationProviderTest {
 		User adminUser = new User();
 		adminUser.setUsername("admin");
 		adminUser.setPassword(encoder.encode("adminPassword"));
-		adminUser.setRoles(Arrays.asList(new String[] {"admin"}));
+		adminUser.setRoles(Arrays.asList(new Role[] { new Role("admin") }));
 		this.validAdminUserEntity = adminUser;
+		
+		User invalidRoles = new User();
+		invalidRoles.setUsername("userInvalidRoles");
+		invalidRoles.setPassword(encoder.encode("password"));
+		invalidRoles.setRoles(Arrays.asList(new Role[] { new Role("user"), null, new Role("modifier") }));
+		this.validUserInvalidRolesEntity = invalidRoles;
 	}
 	
 	@Test
@@ -88,6 +101,12 @@ public class LoginAuthenticationProviderTest {
 		Authentication auth = loginAuthenticationProvider.authenticate(this.validAuthentication);
 		assertThat("User should be authenticated", auth.isAuthenticated(), is(true));
 		assertThat("Authorities should be null for user with no roles", auth.getAuthorities(), anyOf(IsEmptyCollection.empty(), nullValue()));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testAuthenticationValidUserInvalidRoles() {
+		// Throws IllegalArgumentException when attempting to insert null Role into Authorities
+		loginAuthenticationProvider.authenticate(this.validUserInvalidRolesAuthentication);
 	}
 	
 	@Test

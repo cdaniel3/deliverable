@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -30,9 +30,9 @@ public class User {
 	@JsonIgnore
 	private String password;
 	
-	@Transient
-	@JsonIgnore
-	private List<String> roles;
+	@OneToMany(mappedBy="user")
+	@JsonIgnore			// roles shouldn't be serialized to json
+	private List<Role> roles;
 	
 	public User() {
 		
@@ -59,10 +59,10 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public List<String> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
-	public void setRoles(List<String> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
 }

@@ -23,7 +23,7 @@ import com.deliverable.security.SimpleJwtAuthProvider;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private Log log = LogFactory.getLog(WebSecurityConfig.class);
     public static final String AUTHENTICATION_URL = "/auth/login";

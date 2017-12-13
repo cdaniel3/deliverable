@@ -64,7 +64,12 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
         List<GrantedAuthority> authorities = null;
         if (user.getRoles() != null) {
         	authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role))
+                .map(role -> {
+                	if (role != null) {
+                		return new SimpleGrantedAuthority(role.getRoleName());
+                	}
+                	return null;
+                })
                 .collect(Collectors.toList());
         }
         

@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +27,7 @@ public class TicketRESTController {
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public List<Ticket> getTicketsInProgress() {
-		log.debug("Getting tickets in progress...");
+		log.trace("getTicketsInProgress()");
 		return getTicketService().getUnresolvedTickets();
 	}
 	
@@ -60,6 +62,12 @@ public class TicketRESTController {
 	@RequestMapping(method=RequestMethod.DELETE, value="/{ticketId}/priority")
 	public Ticket removePriority(@PathVariable Long ticketId) {
 		return getTicketService().removePriority(ticketId);
+	}
+	
+	@RequestMapping(method=RequestMethod.DELETE, value="/{ticketId}")
+	public ResponseEntity<Void> deleteTicket(@PathVariable Long ticketId) {
+		getTicketService().removeTicket(ticketId);
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 
 	public TicketService getTicketService() {
