@@ -14,11 +14,11 @@ public class JwtHeaderTokenExtractorImpl implements JwtHeaderTokenExtractor {
     public String extractAuthHeaderToken(HttpServletRequest request) {
     	String header = request.getHeader(AUTHENTICATION_HEADER_NAME);
     	if (StringUtils.isEmpty(header)) {
-            throw new AuthenticationServiceException("Authorization header cannot be blank!");
+            throw new AuthenticationServiceException("Authorization header required");
         }
 
         if (header.length() < HEADER_PREFIX.length()) {
-            throw new AuthenticationServiceException("Invalid authorization header size.");
+            throw new AuthenticationServiceException("Invalid authorization header size");
         }
 
         return header.substring(HEADER_PREFIX.length(), header.length());

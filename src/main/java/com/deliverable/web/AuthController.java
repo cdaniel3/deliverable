@@ -54,7 +54,7 @@ public class AuthController {
     @PostMapping(value="/auth/login")
     public @ResponseBody Map<String,String> logInAndObtainAccessToken(@RequestBody LoginRequest loginRequest) {
     	if (StringUtils.isEmpty(loginRequest) || StringUtils.isEmpty(loginRequest.getUsername()) || StringUtils.isEmpty(loginRequest.getPassword())) {
-            throw new AuthenticationServiceException("Username or Password not provided");
+            throw new AuthenticationServiceException("username and password required");
         }
     	UsernamePasswordAuthenticationToken userPassAuthToken = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
     	Authentication authentication = authenticationManager.authenticate(userPassAuthToken);

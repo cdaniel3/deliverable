@@ -44,9 +44,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	
 	@ExceptionHandler({ AuthenticationServiceException.class, UsernameNotFoundException.class, BadCredentialsException.class })
 	public ResponseEntity<Map<String,Object>> handleAuthenticationExceptions(Exception ex, WebRequest request) {
-		return getResponseEntity(HttpStatus.UNAUTHORIZED, "Unauthorized request");
+		return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
 	}
-		
+			
 	private ResponseEntity<Map<String,Object>> getResponseEntity(HttpStatus httpStatus, String msg) {
 		log.info("Exception occurred related to client request. Message will be included in the response: " + msg);
 		

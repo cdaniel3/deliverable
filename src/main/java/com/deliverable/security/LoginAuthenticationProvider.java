@@ -54,11 +54,11 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
                 
         User user = userRepository.findUserByUsername(username);
         if (user == null) {
-        	throw new UsernameNotFoundException("User not found: " + username);
+        	throw new UsernameNotFoundException("Authentication failure");
         }	
         
         if (!encoder.matches(password, user.getPassword())) {
-            throw new BadCredentialsException("Authentication failure - bad credentials");
+            throw new BadCredentialsException("Authentication failure");
         }
         
         List<GrantedAuthority> authorities = null;
