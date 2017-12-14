@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deliverable.exceptions.TicketNotFoundException;
 import com.deliverable.model.Ticket;
 import com.deliverable.service.TicketService;
 
@@ -33,7 +34,11 @@ public class TicketRESTController {
 	
 	@RequestMapping(method=RequestMethod.GET, value="/{ticketId}")
 	public Ticket getTicket(@PathVariable Long ticketId) {
-		return getTicketService().getTicket(ticketId);
+		Ticket ticket = getTicketService().getTicket(ticketId);
+		if (ticket == null) {
+			throw new TicketNotFoundException("Ticket not found. Id: " + ticketId);
+		}
+		return ticket;
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
