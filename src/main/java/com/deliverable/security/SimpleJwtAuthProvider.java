@@ -12,7 +12,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import com.deliverable.service.JwtService;
 
@@ -35,7 +34,7 @@ public class SimpleJwtAuthProvider implements AuthenticationProvider {
 	@Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     	log.trace("SimpleJwtAuthProvider authenticate(Authentication authentication)");
-    	if (StringUtils.isEmpty(authentication)) {
+    	if (authentication == null) {
     		throw new IllegalArgumentException("'authentication' should not be null");
     	}
         String token = (String) authentication.getCredentials();

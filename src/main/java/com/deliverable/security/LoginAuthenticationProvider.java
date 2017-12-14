@@ -41,7 +41,7 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
 	@Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     	log.trace("authenticate(Authentication authentication()");
-    	if (StringUtils.isEmpty(authentication)) {
+    	if (authentication == null) {
     		throw new IllegalArgumentException(GENERIC_AUTH_MSG);
     	}
 

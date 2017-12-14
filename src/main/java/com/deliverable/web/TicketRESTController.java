@@ -29,7 +29,8 @@ public class TicketRESTController {
 	@RequestMapping(method=RequestMethod.GET)
 	public List<Ticket> getTicketsInProgress() {
 		log.trace("getTicketsInProgress()");
-		return getTicketService().getUnresolvedTickets();
+		// Instead of a 404, returns an empty list when no tickets are found. No client side issue, just no tickets to return.
+		return getTicketService().getUnresolvedTickets();		
 	}
 	
 	@RequestMapping(method=RequestMethod.GET, value="/{ticketId}")
