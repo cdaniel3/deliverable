@@ -1,12 +1,11 @@
 package com.deliverable.web;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,45 +28,48 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	
 	private Log log = LogFactory.getLog(RestResponseEntityExceptionHandler.class);
 
-	@ExceptionHandler({ InvalidTicketException.class })
-	public ResponseEntity<Map<String,Object>> handleBadRequestTicketException(Exception ex, WebRequest request) {
-		return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
-	}
-	
+	// Hiding specific error messages from data related Spring exceptions	
 	@ExceptionHandler({ DataIntegrityViolationException.class })
-	public ResponseEntity<Map<String,Object>> handleBadRequestDataIntegrityViolationException(Exception ex, WebRequest request) {
+	public ResponseEntity<RestError> handleSpringBadRequestExceptions(Exception ex, WebRequest request) {
 		return getResponseEntity(HttpStatus.BAD_REQUEST, "Constraint violation occurred");
 	}
 	
+	// Hiding specific error messages from data related Spring exceptions
+	@ExceptionHandler(EmptyResultDataAccessException.class)
+	public ResponseEntity<RestError> handleSpringNotFoundExceptions(Exception ex, WebRequest request) {
+		return getResponseEntity(HttpStatus.NOT_FOUND, "Not found");
+	}
+	
+	@ExceptionHandler({ InvalidTicketException.class })
+	public ResponseEntity<RestError> handleBadRequestTicketException(Exception ex, WebRequest request) {
+		return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
+	}
+	
 	@ExceptionHandler({ TicketNotFoundException.class, PriorityNotFoundException.class })
-	public ResponseEntity<Map<String,Object>> handleNotFoundException(Exception ex, WebRequest request) {
+	public ResponseEntity<RestError> handleNotFoundException(Exception ex, WebRequest request) {
 		return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
 	}
 	
 	@ExceptionHandler({ AuthenticationServiceException.class, UsernameNotFoundException.class, BadCredentialsException.class })
-	public ResponseEntity<Map<String,Object>> handleAuthenticationExceptions(Exception ex, WebRequest request) {
+	public ResponseEntity<RestError> handleAuthenticationExceptions(Exception ex, WebRequest request) {
 		return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
 	}
 	
 	@ExceptionHandler({ AccessDeniedException.class })
-	public ResponseEntity<Map<String,Object>> handleAccessDeniedException(Exception ex, WebRequest request) {
+	public ResponseEntity<RestError> handleAccessDeniedException(Exception ex, WebRequest request) {
 		return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
 	}
 	
 	@ExceptionHandler({ JwtServerException.class })
-	public ResponseEntity<Map<String,Object>> handleServerErrorException(Exception ex, WebRequest request) {
+	public ResponseEntity<RestError> handleServerErrorException(Exception ex, WebRequest request) {
 		return getResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
 	} 
 	
-	private ResponseEntity<Map<String,Object>> getResponseEntity(HttpStatus httpStatus, String msg) {
+	private ResponseEntity<RestError> getResponseEntity(HttpStatus httpStatus, String msg) {
 		log.info("Exception occurred related to client request. Message will be included in the response: " + msg);
 		
-		Map<String, Object> errors = new HashMap<String, Object>();
-		errors.put("timestamp", new Date().getTime());
-		errors.put("error", httpStatus.getReasonPhrase());		
-		errors.put("status", httpStatus.value());
-		errors.put("message", msg);
-		return new ResponseEntity<Map<String,Object>>(
-				errors, new HttpHeaders(), httpStatus);
+		return new ResponseEntity<RestError>(
+				new RestError(new Date().getTime(), httpStatus.getReasonPhrase(), httpStatus.value(), msg), 
+				new HttpHeaders(), httpStatus);
 	}
 }

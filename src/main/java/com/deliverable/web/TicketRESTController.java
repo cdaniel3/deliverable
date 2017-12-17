@@ -5,8 +5,10 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,6 +75,11 @@ public class TicketRESTController {
 	@RequestMapping(method=RequestMethod.DELETE, value="/{ticketId}")
 	public ResponseEntity<Void> deleteTicket(@PathVariable Long ticketId) {
 		getTicketService().removeTicket(ticketId);
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+	}
+	
+	@ExceptionHandler(EmptyResultDataAccessException.class)
+	public ResponseEntity<Void> handleEmptyResultDataAccessException() {
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 
