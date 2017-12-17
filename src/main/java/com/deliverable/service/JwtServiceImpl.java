@@ -52,7 +52,7 @@ public class JwtServiceImpl implements JwtService {
 
 	    Claims claims = Jwts.claims().setSubject(username);
 	    if (authorities != null) {
-	    	claims.put("scopes", authorities.stream().map(s -> s.toString()).collect(Collectors.toList()));
+	    	claims.put("scopes", authorities.stream().map(s -> s.getAuthority()).collect(Collectors.toList()));
 	    }
 	    Calendar expireCal = Calendar.getInstance();
 	    expireCal.add(Calendar.MINUTE, settings.getTokenExpirationTime());
@@ -88,6 +88,9 @@ public class JwtServiceImpl implements JwtService {
 
 	@Override
 	public Jws<Claims> parseClaims(String token) {
+		if (StringUtils.isEmpty(token)) {
+			throw new IllegalArgumentException("Invalid JWT token");
+		}
 		try {
             return Jwts.parser().setSigningKey(settings.getTokenSigningKey()).parseClaimsJws(token);
         } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | SignatureException ex) {
@@ -97,7 +100,6 @@ public class JwtServiceImpl implements JwtService {
             log.info("JWT Token is expired: " + expiredEx);
             throw new JwtExpiredTokenException("JWT Token expired", expiredEx);
         }
-	}
-
+	}	
 }
 

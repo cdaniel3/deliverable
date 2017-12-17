@@ -1,8 +1,5 @@
 package com.deliverable.security;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +8,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -61,19 +56,7 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Authentication failure");
         }
         
-        List<GrantedAuthority> authorities = null;
-        if (user.getRoles() != null) {
-        	authorities = user.getRoles().stream()
-                .map(role -> {
-                	if (role != null) {
-                		return new SimpleGrantedAuthority(role.getRoleName());
-                	}
-                	return null;
-                })
-                .collect(Collectors.toList());
-        }
-        
-        return new UsernamePasswordAuthenticationToken(username, null, authorities);
+        return new UsernamePasswordAuthenticationToken(username, null, user.getRoles());
     }
 
     @Override

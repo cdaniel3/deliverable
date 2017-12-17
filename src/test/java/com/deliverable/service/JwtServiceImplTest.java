@@ -181,6 +181,11 @@ public class JwtServiceImplTest {
 		jwtServiceImpl.parseClaims(expiredToken);
 	}
 
+	@Test(expected=IllegalArgumentException.class)
+	public void testParseClaimsNullToken() {
+		jwtServiceImpl.parseClaims(null);
+	}
+
 	private String createToken(String subject, int expireMinutes) {
 		Claims claims = Jwts.claims().setSubject(subject);
 		Calendar expireCal = Calendar.getInstance();

@@ -20,6 +20,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.deliverable.exceptions.InvalidTicketException;
+import com.deliverable.exceptions.JwtServerException;
 import com.deliverable.exceptions.PriorityNotFoundException;
 import com.deliverable.exceptions.TicketNotFoundException;
 
@@ -52,7 +53,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	public ResponseEntity<Map<String,Object>> handleAccessDeniedException(Exception ex, WebRequest request) {
 		return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
 	}
-			
+	
+	@ExceptionHandler({ JwtServerException.class })
+	public ResponseEntity<Map<String,Object>> handleServerErrorException(Exception ex, WebRequest request) {
+		return getResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+	} 
+	
 	private ResponseEntity<Map<String,Object>> getResponseEntity(HttpStatus httpStatus, String msg) {
 		log.info("Exception occurred related to client request. Message will be included in the response: " + msg);
 		
