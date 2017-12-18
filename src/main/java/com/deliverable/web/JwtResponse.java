@@ -9,8 +9,6 @@ public class JwtResponse {
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 	}
-	
-	public JwtResponse() { }
 
 	public String getAccessToken() {
 		return accessToken;

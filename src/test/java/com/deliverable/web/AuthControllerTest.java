@@ -185,6 +185,7 @@ public class AuthControllerTest {
 	public void testRefreshTokenSuccess() throws ServletException, IOException {
 		JwtResponse jwtResponse = authController.refreshToken(successfulRequest, response);
 		assertThat("Valid access token not returned", jwtResponse.getAccessToken(), equalTo(MOCK_ACCESS_TOKEN));
+		assertThat("Valid refresh token not returned", jwtResponse.getRefreshToken(), equalTo(MOCK_REFRESH_TOKEN));
 	}
 	
 }

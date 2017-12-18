@@ -88,10 +88,9 @@ public class AuthController {
         	throw new UsernameNotFoundException("User not found: " + subject);
         }
 
-        String jwtToken = jwtService.createAccessToken(user.getUsername(), user.getRoles());
-        JwtResponse jwtResponse = new JwtResponse();
-        jwtResponse.setAccessToken(jwtToken);
-        return jwtResponse;
+        String accessToken = jwtService.createAccessToken(user.getUsername(), user.getRoles());
+        String refreshToken = jwtService.createRefreshToken(user.getUsername());
+        return new JwtResponse(accessToken, refreshToken);
     }
 
 }
