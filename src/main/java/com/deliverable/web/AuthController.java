@@ -1,8 +1,6 @@
 package com.deliverable.web;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +55,7 @@ public class AuthController {
 	}
 
 	@PostMapping(value="/auth/login")
-    public @ResponseBody Map<String,String> logInAndObtainAccessToken(@RequestBody LoginRequest loginRequest) {
+    public @ResponseBody JwtResponse logInAndObtainAccessToken(@RequestBody LoginRequest loginRequest) {
     	if (loginRequest == null || StringUtils.isEmpty(loginRequest.getUsername()) || StringUtils.isEmpty(loginRequest.getPassword())) {
             throw new AuthenticationServiceException("username and password required");
         }
@@ -67,11 +65,8 @@ public class AuthController {
     		String username = (String) authentication.getPrincipal();            
             String accessToken = jwtService.createAccessToken(username, authentication.getAuthorities());
             String refreshToken = jwtService.createRefreshToken(username);
-            
-            Map<String, String> responseMap = new HashMap<String, String>();   
-        	responseMap.put("token", accessToken);
-        	responseMap.put("refreshToken", refreshToken);
-        	return responseMap;
+                        
+        	return new JwtResponse(accessToken, refreshToken);
     	} else {
     		// Throw (non-specific) error to hide possibly sensitive info
     		throw new AuthenticationServiceException("Authentication error");
@@ -79,7 +74,7 @@ public class AuthController {
     }
 
     @GetMapping(value="/auth/token", produces={MediaType.APPLICATION_JSON_VALUE})
-    public @ResponseBody Map<String,String> refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public @ResponseBody JwtResponse refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
     	log.trace("refreshToken(HttpServletRequest request, HttpServletResponse response)");
         String token = tokenExtractor.extractAuthHeaderToken(request);
         
@@ -94,9 +89,9 @@ public class AuthController {
         }
 
         String jwtToken = jwtService.createAccessToken(user.getUsername(), user.getRoles());
-        Map<String, String> tokenMap = new HashMap<String,String>();
-        tokenMap.put("token", jwtToken);
-        return tokenMap;
+        JwtResponse jwtResponse = new JwtResponse();
+        jwtResponse.setAccessToken(jwtToken);
+        return jwtResponse;
     }
 
 }

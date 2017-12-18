@@ -1,12 +1,11 @@
 package com.deliverable.web;
 
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -139,9 +138,9 @@ public class AuthControllerTest {
 	@Test
 	public void testLogInAndObtainAccessTokenSuccess() {
 		LoginRequest loginRequest = new LoginRequest("validUser", "validPassword");
-		Map<String,String> tokenMap = authController.logInAndObtainAccessToken(loginRequest);
-		assertThat("Valid access token not returned", tokenMap, hasEntry("token", MOCK_ACCESS_TOKEN));
-		assertThat("Valid refresh token not returned", tokenMap, hasEntry("refreshToken", MOCK_REFRESH_TOKEN));
+		JwtResponse jwtResponse = authController.logInAndObtainAccessToken(loginRequest);
+		assertThat("Valid access token not returned", jwtResponse.getAccessToken(), equalTo(MOCK_ACCESS_TOKEN));
+		assertThat("Valid refresh token not returned", jwtResponse.getRefreshToken(), equalTo(MOCK_REFRESH_TOKEN));
 	}
 	
 	@Test(expected=AuthenticationServiceException.class)
@@ -184,8 +183,8 @@ public class AuthControllerTest {
 	
 	@Test
 	public void testRefreshTokenSuccess() throws ServletException, IOException {
-		Map<String,String> tokenMap = authController.refreshToken(successfulRequest, response);
-		assertThat("Valid access token not returned", tokenMap, hasEntry("token", MOCK_ACCESS_TOKEN));
+		JwtResponse jwtResponse = authController.refreshToken(successfulRequest, response);
+		assertThat("Valid access token not returned", jwtResponse.getAccessToken(), equalTo(MOCK_ACCESS_TOKEN));
 	}
 	
 }
