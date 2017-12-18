@@ -14,13 +14,23 @@ grant select, delete, insert, update on deliverable_db.* to 'deliv_write'@'%' id
 flush privileges;
 
 -- create tickettype table
-create table tickettype (tickettype_id int not null auto_increment, name varchar(30) not null, primary key (tickettype_id));
+create table tickettype (
+  tickettype_id int not null auto_increment,
+  name varchar(30) not null,
+  primary key (tickettype_id));
 
 -- create priority table
-create table priority (priority_id int not null auto_increment, name varchar(30) not null, weight int not null, primary key (priority_id));
+create table priority (
+  priority_id int not null auto_increment,
+  name varchar(30) not null,
+  weight int not null,
+  primary key (priority_id));
 
 -- create status table
-create table status (status_id int not null auto_increment, name varchar(30) not null, primary key (status_id));
+create table status (
+  status_id int not null auto_increment,
+  name varchar(30) not null,
+  primary key (status_id));
 
 -- create users table
 create table users (
@@ -55,7 +65,16 @@ create table tickets (
   foreign key (status_id) references status(status_id));
 
 -- create transition table
-create table transition (transition_id int not null auto_increment, name varchar(64), tickettype_id int not null, origin_status int not null, dest_status int not null, primary key (transition_id), foreign key (tickettype_id) references tickettype(tickettype_id), foreign key (origin_status) references status(status_id), foreign key (dest_status) references status(status_id));
+create table transition (
+  transition_id int not null auto_increment,
+  name varchar(64),
+  tickettype_id int not null,
+  origin_status int not null,
+  dest_status int not null,
+  primary key (transition_id),
+  foreign key (tickettype_id) references tickettype(tickettype_id),
+  foreign key (origin_status) references status(status_id),
+  foreign key (dest_status) references status(status_id));
 
 -- insert tickettype records
 insert into tickettype set name='feature';
