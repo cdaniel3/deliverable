@@ -6,10 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -28,11 +26,11 @@ import com.deliverable.model.Priority;
 import com.deliverable.model.Status;
 import com.deliverable.model.Ticket;
 import com.deliverable.model.TicketType;
-import com.deliverable.model.Transition;
 import com.deliverable.model.User;
 import com.deliverable.repositories.PriorityRepository;
 import com.deliverable.repositories.StatusRepository;
 import com.deliverable.repositories.TicketRepository;
+import com.deliverable.security.AuthenticatedUserContext;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TicketServiceImplTest {
@@ -42,12 +40,12 @@ public class TicketServiceImplTest {
 	
 	private static final long CURRENT_ASSIGNEE_USER_ID = 1;
 	private static final long NEW_ASSIGNEE_USER_ID = 2;
+	private static final String INITIAL_USER_USERNAME = "initialUser";
 
 	private static final TicketType MOCK_FEATURE = getMockFeatureType();
 	private static final TicketType MOCK_BUG = getMockBugType();
 	
 	private static final Status MOCK_OPEN_STATUS = new Status(1, "Open");
-	private static final Status MOCK_IN_DEVELOPMENT_STATUS = new Status(2, "In Development");
 	
 	private static final Priority MOCK_NONE_PRIORITY = getMockNonePriority();
 	private static final Priority MOCK_HIGH_PRIORITY = getMockHighPriority();
@@ -68,21 +66,14 @@ public class TicketServiceImplTest {
 	@Mock
 	private PriorityRepository priorityRepository;
 	
+	@Mock
+	private AuthenticatedUserContext authenticatedUserContext;
+		
 	private TicketServiceImpl ticketServiceImpl;
 
 	@Before
 	public void setupMock() {
-		ticketServiceImpl = new TicketServiceImpl();
 		MockitoAnnotations.initMocks(this);
-		ticketServiceImpl.setTicketRepository(ticketRepository);
-		ticketServiceImpl.setStatusRepository(statusRepository);
-		ticketServiceImpl.setEntityManager(entityManager);
-		ticketServiceImpl.setPriorityRepository(priorityRepository);
-		
-		TicketConfiguration ticketConfiguration = new TicketConfiguration();
-		ticketConfiguration.setDefaultPriority(DEFAULT_PRIORITY);
-		ticketConfiguration.setDefaultStatus(DEFAULT_STATUS);
-		ticketServiceImpl.setTicketConfiguration(ticketConfiguration);
 		
 		// Mocks for EntityManager				
 		when(entityManager.getReference(TicketType.class, MOCK_BUG.getId())).thenReturn(MOCK_BUG);
@@ -105,9 +96,22 @@ public class TicketServiceImplTest {
 			}
 			return savedTicket;
 		});
-		setupMockTransitions();
 		setupMockForExistingTicket();
+		
+		when(authenticatedUserContext.getUsername()).thenReturn(INITIAL_USER_USERNAME);
+		
+		ticketServiceImpl = new TicketServiceImpl();		
+		ticketServiceImpl.setTicketRepository(ticketRepository);
+		ticketServiceImpl.setStatusRepository(statusRepository);
+		ticketServiceImpl.setEntityManager(entityManager);
+		ticketServiceImpl.setPriorityRepository(priorityRepository);
+		ticketServiceImpl.setAuthenticatedUserContext(authenticatedUserContext);
+		TicketConfiguration ticketConfiguration = new TicketConfiguration();
+		ticketConfiguration.setDefaultPriority(DEFAULT_PRIORITY);
+		ticketConfiguration.setDefaultStatus(DEFAULT_STATUS);
+		ticketServiceImpl.setTicketConfiguration(ticketConfiguration);
 	}
+	
 
 	private void setupMockForExistingTicket() {	
 		Ticket existingTicket = new Ticket();
@@ -115,16 +119,10 @@ public class TicketServiceImplTest {
 		existingTicket.setName("mock entity to use for update");
 		existingTicket.setTicketType(MOCK_FEATURE);
 		existingTicket.setDateCreated(new Date());
-		existingTicket.setAssignee(new User(CURRENT_ASSIGNEE_USER_ID, "initialUser"));
+		existingTicket.setAssignee(new User(CURRENT_ASSIGNEE_USER_ID, INITIAL_USER_USERNAME));
 		existingTicket.setPriority(MOCK_NONE_PRIORITY);
 		existingTicket.setStatus(MOCK_OPEN_STATUS);
 		when(ticketRepository.findOne(new Long(MOCK_UPDATED_TICKET_ID))).thenReturn(existingTicket);
-	}
-	
-	private void setupMockTransitions() {
-		List<Transition> transitions = new ArrayList<Transition>();
-		transitions.add(new Transition("Move to in dev", MOCK_IN_DEVELOPMENT_STATUS));
-		when(ticketRepository.getTransitions(MOCK_FEATURE.getId(), MOCK_OPEN_STATUS.getId())).thenReturn(transitions);
 	}
 
 	@Test
@@ -146,7 +144,6 @@ public class TicketServiceImplTest {
 		ticket.setDescription("descr");
 		ticket.setPriority(MOCK_HIGH_PRIORITY);		
 		ticket.setAssignee(new User(NEW_ASSIGNEE_USER_ID, "new assignee"));
-		ticket.setStatus(MOCK_IN_DEVELOPMENT_STATUS);
 		
 		when(entityManager.getReference(User.class, NEW_ASSIGNEE_USER_ID)).thenReturn(ticket.getAssignee());
 		
@@ -156,7 +153,6 @@ public class TicketServiceImplTest {
 		assertEquals("Ticket description should be updated to new description", ticket.getDescription(), updatedTicket.getDescription());
 		assertEquals("Ticket assignee should be updated to new assignee", ticket.getAssignee().getUsername(), updatedTicket.getAssignee().getUsername());
 		assertEquals("Ticket priority should be updated to new priority", ticket.getPriority().getValue(), updatedTicket.getPriority().getValue());
-		assertEquals("Ticket status should be updated to new status", ticket.getStatus().getValue(), updatedTicket.getStatus().getValue());		
 		assertNotNull("Updated ticket should not have a null ticket type", updatedTicket.getTicketType());
 		assertNotNull("Updated ticket should not have a null date created", updatedTicket.getDateCreated());		
 	}

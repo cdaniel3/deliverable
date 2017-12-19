@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import com.deliverable.model.User;
 import com.deliverable.repositories.PriorityRepository;
 import com.deliverable.repositories.StatusRepository;
 import com.deliverable.repositories.TicketRepository;
+import com.deliverable.security.AuthenticatedUserContext;
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -42,7 +44,10 @@ public class TicketServiceImpl implements TicketService {
 	private PriorityRepository priorityRepository;
 	
 	@Autowired
-	private TicketConfiguration ticketConfiguration;
+	private TicketConfiguration ticketConfiguration;	
+	
+	@Autowired
+	private AuthenticatedUserContext authenticatedUserContext;
 
 	public Ticket getTicket(Long ticketId) {
 		return getTicketRepository().findOne(ticketId);
@@ -87,19 +92,18 @@ public class TicketServiceImpl implements TicketService {
 		if (entityTicket == null) {
 			throw new TicketNotFoundException("Ticket not found. Id: " + requestedTicket.getId());
 		}
-		Ticket updatedTicket = parseBasicTicketFields(requestedTicket, entityTicket);
-		
-		Status requestedStatus = requestedTicket.getStatus();
-		if (requestedStatus != null) {
-			Status validatedStatus = validateStatus(entityTicket, requestedStatus);
-			if (validatedStatus != null) {
-				updatedTicket.setStatus(validatedStatus);
-			} else {
-				throw new InvalidTicketException("Status update not allowed");
-			}
+		User currentAssignee = entityTicket.getAssignee();
+		Status currentStatus = entityTicket.getStatus();		
+		parseBasicTicketFields(requestedTicket, entityTicket);		
+
+		Status newStatus = requestedTicket.getStatus();
+		if (newStatus != null) {
+			Status newStatusEntity = getEntityManager().getReference(Status.class, newStatus.getId());
+			entityTicket.setStatus(newStatusEntity);
+			validateTicketStatusTransition(currentAssignee, currentStatus, entityTicket);
 		}
-		
-		return getTicketRepository().save(updatedTicket);
+
+		return getTicketRepository().save(entityTicket);
 	}
 
 	private Ticket parseBasicTicketFields(Ticket requestedTicket, Ticket destination) {
@@ -123,32 +127,75 @@ public class TicketServiceImpl implements TicketService {
 		if (assignee != null) {
 			User newAssignee = getEntityManager().getReference(User.class, assignee.getId());
 			destination.setAssignee(newAssignee);
-			
 		}
 		
 		return destination;
 	}
 	
-
+	private void validateTicketStatusTransition(User currentAssignee, Status currentStatus, Ticket updatedTicket) {
+		if (updatedTicket == null) {
+			throw new IllegalArgumentException("Ticket to update must not be null");
+		}
+		
+		if (!isTransitioningStatusAllowed(currentAssignee, updatedTicket)) {
+			throw new AccessDeniedException("A ticket's status may only be updated by the assignee");
+		}
+		
+		if (!isNewStatusValid(updatedTicket.getStatus(), currentStatus, updatedTicket.getTicketType())) {
+			throw new InvalidTicketException("Status update not allowed");
+		}
+	}
 	
-	private Status validateStatus(Ticket ticket, Status requestedStatus) {
-		Status status = null;
-		if (ticket != null && requestedStatus != null) {
-			TicketType ticketType = ticket.getTicketType();
-			Status currentStatus = ticket.getStatus();
-			if (ticketType != null && currentStatus != null) {
-				List<Transition> transitions = getTransitions(ticketType.getId(), currentStatus.getId());
-				if (transitions != null) {
-					for (Transition transition : transitions) {
-						if (transition.getDestinationStatus().getId() == requestedStatus.getId()) {
-							status = transition.getDestinationStatus();
+	public boolean isTransitioningStatusAllowed(User currentAssignee, Ticket updatedTicket) {
+		boolean isAllowed = false;
+		if (currentAssignee == null) {
+			// Currently unassigned. No issues transitioning status.
+			isAllowed = true;
+		} else if (isAssignedToAuthedUser(currentAssignee.getUsername())) {
+			// Currently assigned to user logged in
+			isAllowed = true;
+		} else {
+			if (updatedTicket != null) {
+				User assignee = updatedTicket.getAssignee();			
+				if (assignee != null) {
+					if (isAssigningTicketToSelf(assignee.getUsername())) {
+						// Authenticated user is assigning ticket to themselves
+						isAllowed = true;
+					}
+				} else {
+					// Unassigning ticket
+					isAllowed = true;
+				}	
+			}
+		}		
+		return isAllowed;
+	}
+	
+	private boolean isAssignedToAuthedUser(String currentAssignee) {
+		return currentAssignee != null && currentAssignee.equals(getAuthenticatedUserContext().getUsername());
+	}
+	
+	private boolean isAssigningTicketToSelf(String assignee) {
+		return assignee != null && assignee.equals(getAuthenticatedUserContext().getUsername());
+	}
+	
+	private boolean isNewStatusValid(Status newStatus, Status currentStatus, TicketType ticketType) {
+		boolean isStatusValid = false;
+		if (newStatus != null && currentStatus != null && ticketType != null) {
+			List<Transition> transitions = getTransitions(ticketType.getId(), currentStatus.getId());
+			if (transitions != null) {
+				for (Transition transition : transitions) {
+					if (transition != null) {
+						Status destinationStatus = transition.getDestinationStatus();
+						if (destinationStatus != null && destinationStatus.getId() == newStatus.getId()) {
+							isStatusValid = true;
 							break;
 						}
 					}
 				}
-			}
+			}		
 		}
-		return status;
+		return isStatusValid;
 	}
 
 	@Override
@@ -186,7 +233,7 @@ public class TicketServiceImpl implements TicketService {
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void removeTicket(Long ticketId) {		
+	public void removeTicket(Long ticketId) {
 		if (ticketId == null) {
 			throw new InvalidTicketException("Ticket must not be null");
 		}
@@ -235,6 +282,14 @@ public class TicketServiceImpl implements TicketService {
 
 	public void setTicketConfiguration(TicketConfiguration ticketConfiguration) {
 		this.ticketConfiguration = ticketConfiguration;
+	}
+
+	public AuthenticatedUserContext getAuthenticatedUserContext() {
+		return authenticatedUserContext;
+	}
+
+	public void setAuthenticatedUserContext(AuthenticatedUserContext authenticatedUserContext) {
+		this.authenticatedUserContext = authenticatedUserContext;
 	}
 
 }
