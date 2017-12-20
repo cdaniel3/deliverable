@@ -275,6 +275,13 @@ public class TicketServiceImpl implements TicketService {
 			throw new InvalidTicketException("Comment id and comment text are required when updating comment");
 		}
 		Comment comment = getCommentRepository().findOne(commentId);
+		User commentAuthor = comment.getUser();
+		if (commentAuthor != null) {
+			String commentAuthorUsername = commentAuthor.getUsername();
+			if (commentAuthorUsername != null && !commentAuthorUsername.equals(getAuthenticatedUserContext().getUsername())) {
+				throw new AccessDeniedException("Only the comment's author is allowed to update a comment");
+			}
+		}
 		comment.setCommentText(commentText);
 		comment.setTimestamp(new Date());				// Update the timestamp to show that the comment was recently updated
 		return getCommentRepository().save(comment);
