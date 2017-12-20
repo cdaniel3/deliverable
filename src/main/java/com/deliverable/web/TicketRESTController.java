@@ -10,12 +10,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deliverable.exceptions.TicketNotFoundException;
+import com.deliverable.model.Comment;
 import com.deliverable.model.Ticket;
 import com.deliverable.service.TicketService;
 
@@ -71,13 +74,23 @@ public class TicketRESTController {
 	public Ticket removePriority(@PathVariable Long ticketId) {
 		return getTicketService().removePriority(ticketId);
 	}
-	
+
 	@RequestMapping(method=RequestMethod.DELETE, value="/{ticketId}")
 	public ResponseEntity<Void> deleteTicket(@PathVariable Long ticketId) {
 		getTicketService().removeTicket(ticketId);
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
-	
+
+	@PostMapping(value="/{ticketId}/comments")
+	public Comment addComment(@PathVariable Long ticketId, @RequestBody String commentText) {
+		return getTicketService().addComment(ticketId, commentText);
+	}
+
+	@PutMapping(value="/{ticketId}/comments/{commentId}")
+	public Comment updateComment(@PathVariable Long commentId, @RequestBody String commentText) {
+		return getTicketService().updateComment(commentId, commentText);
+	}
+
 	@ExceptionHandler(EmptyResultDataAccessException.class)
 	public ResponseEntity<Void> handleEmptyResultDataAccessException() {
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);

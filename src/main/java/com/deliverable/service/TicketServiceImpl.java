@@ -11,19 +11,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.deliverable.config.TicketConfiguration;
 import com.deliverable.exceptions.InvalidTicketException;
 import com.deliverable.exceptions.TicketNotFoundException;
+import com.deliverable.model.Comment;
 import com.deliverable.model.Priority;
 import com.deliverable.model.Status;
 import com.deliverable.model.Ticket;
 import com.deliverable.model.TicketType;
 import com.deliverable.model.Transition;
 import com.deliverable.model.User;
+import com.deliverable.repositories.CommentRepository;
 import com.deliverable.repositories.PriorityRepository;
 import com.deliverable.repositories.StatusRepository;
 import com.deliverable.repositories.TicketRepository;
+import com.deliverable.repositories.UserRepository;
 import com.deliverable.security.AuthenticatedUserContext;
 
 @Service
@@ -48,6 +52,12 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Autowired
 	private AuthenticatedUserContext authenticatedUserContext;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private CommentRepository commentRepository;
 
 	public Ticket getTicket(Long ticketId) {
 		return getTicketRepository().findOne(ticketId);
@@ -243,6 +253,32 @@ public class TicketServiceImpl implements TicketService {
 	public List<Transition> getTransitions(Long ticketTypeId, Long originStatusId) {
 		return getTicketRepository().getTransitions(ticketTypeId, originStatusId);
 	}
+	
+	@Override
+	public Comment addComment(Long ticketId, String commentText) {
+		if (ticketId == null || StringUtils.isEmpty(commentText)) {
+			throw new InvalidTicketException("Ticket id and comment text are required when adding comment");
+		}
+		Comment newComment = new Comment();
+		newComment.setCommentText(commentText);
+		newComment.setTicketId(ticketId);
+		newComment.setTimestamp(new Date());
+		User authenticatedUser = getUserRepository().findUserByUsername(getAuthenticatedUserContext().getUsername());
+		newComment.setUser(authenticatedUser);
+		
+		return getCommentRepository().save(newComment);
+	}
+	
+	@Override
+	public Comment updateComment(Long commentId, String commentText) {
+		if (commentId == null || StringUtils.isEmpty(commentText)) {
+			throw new InvalidTicketException("Comment id and comment text are required when updating comment");
+		}
+		Comment comment = getCommentRepository().findOne(commentId);
+		comment.setCommentText(commentText);
+		comment.setTimestamp(new Date());				// Update the timestamp to show that the comment was recently updated
+		return getCommentRepository().save(comment);
+	}
 
 	public TicketRepository getTicketRepository() {
 		return ticketRepository;
@@ -292,4 +328,19 @@ public class TicketServiceImpl implements TicketService {
 		this.authenticatedUserContext = authenticatedUserContext;
 	}
 
+	public CommentRepository getCommentRepository() {
+		return commentRepository;
+	}
+
+	public void setCommentRepository(CommentRepository commentRepository) {
+		this.commentRepository = commentRepository;
+	}
+
+	public UserRepository getUserRepository() {
+		return userRepository;
+	}
+
+	public void setUserRepository(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 }

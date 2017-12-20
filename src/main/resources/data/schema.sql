@@ -40,13 +40,13 @@ create table users (
   enabled tinyint(1) not null,
   primary key (user_id));
 
--- create authorities table
+-- create roles table
 create table roles (
   role_id int not null auto_increment,
   user_id int not null,
   role_name varchar(50) not null,
   primary key (role_id),
-  foreign key (user_id) references users(user_id));
+  foreign key (user_id) references users(user_id) on delete cascade);
 
 -- create tickets table
 create table tickets (
@@ -63,6 +63,17 @@ create table tickets (
   foreign key (tickettype_id) references tickettype(tickettype_id),
   foreign key (priority_id) references priority(priority_id),
   foreign key (status_id) references status(status_id));
+
+-- create comments table
+create table comments (
+  comment_id int not null auto_increment,
+  ticket_id int not null,
+  comment text not null,
+  user_id int not null,
+  comment_timestamp timestamp default current_timestamp,
+  primary key (comment_id),
+  foreign key (ticket_id) references tickets (ticket_id) on delete cascade,
+  foreign key (user_id) references users (user_id) on delete cascade);
 
 -- create transition table
 create table transition (

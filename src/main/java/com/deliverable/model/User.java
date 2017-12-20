@@ -34,6 +34,9 @@ public class User {
 	@JsonIgnore			// roles shouldn't be serialized to json
 	private List<Role> roles;
 	
+	@OneToMany(mappedBy="user")
+	private List<Comment> ticketComments;
+	
 	public User() {
 		
 	}
