@@ -133,21 +133,7 @@ public class TicketServiceImplStatusTest {
 		Ticket updatedTicket = ticketServiceImpl.updateTicket(requestedTicket);
 		assertThat("Updated ticket does not contain new status", updatedTicket.getStatus().getValue(), equalTo(inDevStatus.getValue()));
 	}
-	
-	@Test
-	public void testUpdateStatus_AuthedUserIsAssigningToAnotherUser() {
-		// Alice is logged in and performing the update
-		when(authenticatedUserContext.getUsername()).thenReturn("alice");
 		
-		// Configure mock entity ticket
-		entityTicket.setAssignee(userAlice);		// alice is the current assignee
-		
-		// Updating ticket status to "In dev"
-		requestedTicket.setStatus(inDevStatus);
-		Ticket updatedTicket = ticketServiceImpl.updateTicket(requestedTicket);
-		assertThat("Updated ticket does not contain new status", updatedTicket.getStatus().getValue(), equalTo(inDevStatus.getValue()));
-	}
-	
 	@Test
 	public void testUpdateStatus_AuthedUserAssigningToSelf() {
 		// Alice is logged in and performing the update
@@ -169,7 +155,8 @@ public class TicketServiceImplStatusTest {
 	
 	@Test
 	public void testUpdateStatus_AuthedUserAssigningFromUnassignedToSelf() {
-		// No need to mock the authenticated user (any user can assign an unassigned ticket), so authenticatedUserContext.getUsername() isn't executed
+		// Alice is logged in and performing the update
+		when(authenticatedUserContext.getUsername()).thenReturn("alice");
 		
 		// No need for any further mocks to entityTicket (assignee is already null)
 		
@@ -185,9 +172,10 @@ public class TicketServiceImplStatusTest {
 		assertThat("Updated ticket assignee is not set to new assignee", updatedTicket.getAssignee().getUsername(), equalTo(userAlice.getUsername()));
 	}
 	
-	@Test
+	@Test(expected=AccessDeniedException.class)
 	public void testUpdateStatus_AuthedUserIsAssigningFromUnassignedToAnotherUser() {
-		// No need to mock the authenticated user (any user can assign an unassigned ticket), so authenticatedUserContext.getUsername() isn't executed
+		// Alice is logged in and performing the update
+		when(authenticatedUserContext.getUsername()).thenReturn("alice");
 		
 		// No need for any further mocks to entityTicket (assignee is already null)
 		

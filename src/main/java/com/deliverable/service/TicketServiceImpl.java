@@ -77,9 +77,8 @@ public class TicketServiceImpl implements TicketService {
 		}
 		Ticket newTicket = parseBasicTicketFields(requestedTicket, new Ticket());
 		// TicketType is required for a new ticket
-		TicketType ticketType = requestedTicket.getTicketType();	
-		TicketType ticketTypeRef = getEntityManager().getReference(TicketType.class, ticketType.getId());
-		newTicket.setTicketType(ticketTypeRef);			
+		TicketType ticketType = requestedTicket.getTicketType();
+		newTicket.setTicketType(getEntityManager().getReference(TicketType.class, ticketType.getId()));
 		
 		if (newTicket.getDescription() == null) {
 			newTicket.setDescription("");
@@ -102,15 +101,11 @@ public class TicketServiceImpl implements TicketService {
 		if (entityTicket == null) {
 			throw new TicketNotFoundException("Ticket not found. Id: " + requestedTicket.getId());
 		}
-		User currentAssignee = entityTicket.getAssignee();
-		Status currentStatus = entityTicket.getStatus();		
 		parseBasicTicketFields(requestedTicket, entityTicket);		
 
 		Status newStatus = requestedTicket.getStatus();
 		if (newStatus != null) {
-			Status newStatusEntity = getEntityManager().getReference(Status.class, newStatus.getId());
-			entityTicket.setStatus(newStatusEntity);
-			validateTicketStatusTransition(currentAssignee, currentStatus, entityTicket);
+			updateStatus(entityTicket, getEntityManager().getReference(Status.class, newStatus.getId()));
 		}
 
 		return getTicketRepository().save(entityTicket);
@@ -129,64 +124,45 @@ public class TicketServiceImpl implements TicketService {
 		
 		Priority requestedPriority = requestedTicket.getPriority();
 		if (requestedPriority != null) {
-			Priority priority = getEntityManager().getReference(Priority.class, requestedPriority.getId());
-			destination.setPriority(priority);
+			destination.setPriority(getEntityManager().getReference(Priority.class, requestedPriority.getId()));
 		}
 		
 		User assignee = requestedTicket.getAssignee();
 		if (assignee != null) {
-			User newAssignee = getEntityManager().getReference(User.class, assignee.getId());
-			destination.setAssignee(newAssignee);
+			destination.setAssignee(getEntityManager().getReference(User.class, assignee.getId()));
 		}
 		
 		return destination;
 	}
 	
-	private void validateTicketStatusTransition(User currentAssignee, Status currentStatus, Ticket updatedTicket) {
-		if (updatedTicket == null) {
-			throw new IllegalArgumentException("Ticket to update must not be null");
+	public Ticket updateTicketStatus(Long ticketId, Status newStatus) {
+		Ticket entityTicket = ticketRepository.findOne(ticketId);
+		if (entityTicket == null) {
+			throw new TicketNotFoundException("Ticket not found. Id: " + ticketId);
 		}
-		
-		if (!isTransitioningStatusAllowed(currentAssignee, updatedTicket)) {
+		updateStatus(entityTicket, newStatus);
+		return getTicketRepository().save(entityTicket);
+	}
+	
+	private void updateStatus(Ticket entityTicket, Status newStatus) {
+		if (!isAuthedUserAllowedToUpdateStatus(entityTicket.getAssignee())) {
 			throw new AccessDeniedException("A ticket's status may only be updated by the assignee");
 		}
-		
-		if (!isNewStatusValid(updatedTicket.getStatus(), currentStatus, updatedTicket.getTicketType())) {
+		if (!isNewStatusValid(newStatus, entityTicket.getStatus(), entityTicket.getTicketType())) {
 			throw new InvalidTicketException("Status update not allowed");
 		}
+		
+		entityTicket.setStatus(newStatus);
 	}
 	
-	public boolean isTransitioningStatusAllowed(User currentAssignee, Ticket updatedTicket) {
+	private boolean isAuthedUserAllowedToUpdateStatus(User assignee) {
 		boolean isAllowed = false;
-		if (currentAssignee == null) {
-			// Currently unassigned. No issues transitioning status.
+		if (assignee == null) {
 			isAllowed = true;
-		} else if (isAssignedToAuthedUser(currentAssignee.getUsername())) {
-			// Currently assigned to user logged in
+		} else if (assignee.getUsername() != null && assignee.getUsername().equals(getAuthenticatedUserContext().getUsername())) {
 			isAllowed = true;
-		} else {
-			if (updatedTicket != null) {
-				User assignee = updatedTicket.getAssignee();			
-				if (assignee != null) {
-					if (isAssigningTicketToSelf(assignee.getUsername())) {
-						// Authenticated user is assigning ticket to themselves
-						isAllowed = true;
-					}
-				} else {
-					// Unassigning ticket
-					isAllowed = true;
-				}	
-			}
-		}		
+		}
 		return isAllowed;
-	}
-	
-	private boolean isAssignedToAuthedUser(String currentAssignee) {
-		return currentAssignee != null && currentAssignee.equals(getAuthenticatedUserContext().getUsername());
-	}
-	
-	private boolean isAssigningTicketToSelf(String assignee) {
-		return assignee != null && assignee.equals(getAuthenticatedUserContext().getUsername());
 	}
 	
 	private boolean isNewStatusValid(Status newStatus, Status currentStatus, TicketType ticketType) {
