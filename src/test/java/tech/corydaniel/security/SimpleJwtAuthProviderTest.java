@@ -1,4 +1,4 @@
-package com.deliverable.security;
+package tech.corydaniel.security;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -21,7 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-import com.deliverable.service.JwtService;
+import tech.corydaniel.service.JwtService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

@@ -1,4 +1,4 @@
-package com.deliverable.model;
+package tech.corydaniel.model;
 
 public class Transition {
 	private String name;

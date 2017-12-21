@@ -1,4 +1,4 @@
-package com.deliverable.config;
+package tech.corydaniel.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

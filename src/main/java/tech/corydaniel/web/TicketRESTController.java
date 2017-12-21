@@ -1,4 +1,4 @@
-package com.deliverable.web;
+package tech.corydaniel.web;
 
 import java.util.List;
 
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliverable.exceptions.TicketNotFoundException;
-import com.deliverable.model.Comment;
-import com.deliverable.model.Ticket;
-import com.deliverable.service.TicketService;
+import tech.corydaniel.exceptions.TicketNotFoundException;
+import tech.corydaniel.model.Comment;
+import tech.corydaniel.model.Ticket;
+import tech.corydaniel.service.TicketService;
 
 @RestController
 @RequestMapping("/tickets")

@@ -1,10 +1,10 @@
-package com.deliverable.service;
+package tech.corydaniel.service;
 
 import java.util.List;
 
-import com.deliverable.model.Comment;
-import com.deliverable.model.Ticket;
-import com.deliverable.model.Transition;
+import tech.corydaniel.model.Comment;
+import tech.corydaniel.model.Ticket;
+import tech.corydaniel.model.Transition;
 
 public interface TicketService {
 

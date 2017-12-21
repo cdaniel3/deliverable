@@ -1,4 +1,4 @@
-package com.deliverable.web;
+package tech.corydaniel.web;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliverable.model.User;
-import com.deliverable.repositories.UserRepository;
+import tech.corydaniel.model.User;
+import tech.corydaniel.repositories.UserRepository;
 
 @RestController
 @RequestMapping("/users")

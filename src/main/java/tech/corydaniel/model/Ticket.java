@@ -1,4 +1,4 @@
-package com.deliverable.model;
+package tech.corydaniel.model;
 
 import java.util.Date;
 import java.util.List;

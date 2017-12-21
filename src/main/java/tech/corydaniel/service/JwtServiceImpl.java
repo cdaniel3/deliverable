@@ -1,4 +1,4 @@
-package com.deliverable.service;
+package tech.corydaniel.service;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -14,8 +14,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.deliverable.exceptions.JwtExpiredTokenException;
-import com.deliverable.security.config.JwtSettings;
+import tech.corydaniel.exceptions.JwtExpiredTokenException;
+import tech.corydaniel.security.config.JwtSettings;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

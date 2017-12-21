@@ -1,4 +1,4 @@
-package com.deliverable.service;
+package tech.corydaniel.service;
 
 import java.util.Collection;
 

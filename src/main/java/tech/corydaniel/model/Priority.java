@@ -1,4 +1,4 @@
-package com.deliverable.model;
+package tech.corydaniel.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

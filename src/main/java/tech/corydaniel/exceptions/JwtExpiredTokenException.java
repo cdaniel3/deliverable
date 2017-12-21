@@ -1,4 +1,4 @@
-package com.deliverable.exceptions;
+package tech.corydaniel.exceptions;
 
 import org.springframework.security.core.AuthenticationException;
 

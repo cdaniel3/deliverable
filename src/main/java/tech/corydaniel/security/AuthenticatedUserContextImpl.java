@@ -1,4 +1,4 @@
-package com.deliverable.security;
+package tech.corydaniel.security;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,4 +1,4 @@
-package com.deliverable.service;
+package tech.corydaniel.service;
 
 import java.util.Date;
 import java.util.List;
@@ -13,22 +13,22 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.deliverable.config.TicketConfiguration;
-import com.deliverable.exceptions.InvalidTicketException;
-import com.deliverable.exceptions.TicketNotFoundException;
-import com.deliverable.model.Comment;
-import com.deliverable.model.Priority;
-import com.deliverable.model.Status;
-import com.deliverable.model.Ticket;
-import com.deliverable.model.TicketType;
-import com.deliverable.model.Transition;
-import com.deliverable.model.User;
-import com.deliverable.repositories.CommentRepository;
-import com.deliverable.repositories.PriorityRepository;
-import com.deliverable.repositories.StatusRepository;
-import com.deliverable.repositories.TicketRepository;
-import com.deliverable.repositories.UserRepository;
-import com.deliverable.security.AuthenticatedUserContext;
+import tech.corydaniel.config.TicketConfiguration;
+import tech.corydaniel.exceptions.InvalidTicketException;
+import tech.corydaniel.exceptions.TicketNotFoundException;
+import tech.corydaniel.model.Comment;
+import tech.corydaniel.model.Priority;
+import tech.corydaniel.model.Status;
+import tech.corydaniel.model.Ticket;
+import tech.corydaniel.model.TicketType;
+import tech.corydaniel.model.Transition;
+import tech.corydaniel.model.User;
+import tech.corydaniel.repositories.CommentRepository;
+import tech.corydaniel.repositories.PriorityRepository;
+import tech.corydaniel.repositories.StatusRepository;
+import tech.corydaniel.repositories.TicketRepository;
+import tech.corydaniel.repositories.UserRepository;
+import tech.corydaniel.security.AuthenticatedUserContext;
 
 @Service
 public class TicketServiceImpl implements TicketService {

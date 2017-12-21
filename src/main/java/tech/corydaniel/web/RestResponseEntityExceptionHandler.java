@@ -1,4 +1,4 @@
-package com.deliverable.web;
+package tech.corydaniel.web;
 
 import java.util.Date;
 
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.deliverable.exceptions.InvalidTicketException;
-import com.deliverable.exceptions.JwtServerException;
-import com.deliverable.exceptions.PriorityNotFoundException;
-import com.deliverable.exceptions.TicketNotFoundException;
+import tech.corydaniel.exceptions.InvalidTicketException;
+import tech.corydaniel.exceptions.JwtServerException;
+import tech.corydaniel.exceptions.PriorityNotFoundException;
+import tech.corydaniel.exceptions.TicketNotFoundException;
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {

@@ -1,4 +1,4 @@
-package com.deliverable.service;
+package tech.corydaniel.service;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -22,14 +22,14 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.access.AccessDeniedException;
 
-import com.deliverable.exceptions.InvalidTicketException;
-import com.deliverable.model.Status;
-import com.deliverable.model.Ticket;
-import com.deliverable.model.TicketType;
-import com.deliverable.model.Transition;
-import com.deliverable.model.User;
-import com.deliverable.repositories.TicketRepository;
-import com.deliverable.security.AuthenticatedUserContext;
+import tech.corydaniel.exceptions.InvalidTicketException;
+import tech.corydaniel.model.Status;
+import tech.corydaniel.model.Ticket;
+import tech.corydaniel.model.TicketType;
+import tech.corydaniel.model.Transition;
+import tech.corydaniel.model.User;
+import tech.corydaniel.repositories.TicketRepository;
+import tech.corydaniel.security.AuthenticatedUserContext;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TicketServiceImplStatusTest {

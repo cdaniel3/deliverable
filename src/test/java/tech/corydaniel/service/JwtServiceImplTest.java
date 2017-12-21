@@ -1,4 +1,4 @@
-package com.deliverable.service;
+package tech.corydaniel.service;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -24,8 +24,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.authentication.BadCredentialsException;
 
-import com.deliverable.exceptions.JwtExpiredTokenException;
-import com.deliverable.security.config.JwtSettings;
+import tech.corydaniel.exceptions.JwtExpiredTokenException;
+import tech.corydaniel.security.config.JwtSettings;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

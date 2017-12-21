@@ -1,4 +1,4 @@
-package com.deliverable.security;
+package tech.corydaniel.security;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

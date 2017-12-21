@@ -1,4 +1,4 @@
-package com.deliverable.security;
+package tech.corydaniel.security;
 
 public interface AuthenticatedUserContext {
 	

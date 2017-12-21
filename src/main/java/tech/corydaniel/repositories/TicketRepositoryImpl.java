@@ -1,4 +1,4 @@
-package com.deliverable.repositories;
+package tech.corydaniel.repositories;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.deliverable.model.Status;
-import com.deliverable.model.Transition;
+import tech.corydaniel.model.Status;
+import tech.corydaniel.model.Transition;
 
 public class TicketRepositoryImpl implements TicketRepositoryBase {
 	

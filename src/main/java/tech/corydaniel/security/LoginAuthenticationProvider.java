@@ -1,4 +1,4 @@
-package com.deliverable.security;
+package tech.corydaniel.security;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,8 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.deliverable.model.User;
-import com.deliverable.repositories.UserRepository;
+import tech.corydaniel.model.User;
+import tech.corydaniel.repositories.UserRepository;
 
 @Component
 public class LoginAuthenticationProvider implements AuthenticationProvider {

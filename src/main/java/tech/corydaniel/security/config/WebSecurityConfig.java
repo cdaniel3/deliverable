@@ -1,4 +1,4 @@
-package com.deliverable.security.config;
+package tech.corydaniel.security.config;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,10 +16,10 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.deliverable.security.JwtHeaderTokenExtractor;
-import com.deliverable.security.JwtTokenAuthenticationProcessingFilter;
-import com.deliverable.security.LoginAuthenticationProvider;
-import com.deliverable.security.SimpleJwtAuthProvider;
+import tech.corydaniel.security.JwtHeaderTokenExtractor;
+import tech.corydaniel.security.JwtTokenAuthenticationProcessingFilter;
+import tech.corydaniel.security.LoginAuthenticationProvider;
+import tech.corydaniel.security.SimpleJwtAuthProvider;
 
 @Configuration
 @EnableWebSecurity

@@ -1,4 +1,4 @@
-package com.deliverable.security;
+package tech.corydaniel.security;
 
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -22,9 +22,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.deliverable.model.Role;
-import com.deliverable.model.User;
-import com.deliverable.repositories.UserRepository;
+import tech.corydaniel.model.Role;
+import tech.corydaniel.model.User;
+import tech.corydaniel.repositories.UserRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LoginAuthenticationProviderTest {

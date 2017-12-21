@@ -3,13 +3,13 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <!-- Maven POM version -->
 	<modelVersion>4.0.0</modelVersion>
-    <groupId>com.deliverable</groupId>
+    <groupId>tech.corydaniel</groupId>
     <artifactId>deliverable-ws</artifactId>
     <packaging>jar</packaging>
     <version>0.1.0</version>
 
-    <name>Deliverable</name>
-    <description>Issue tracker service using Spring / REST</description>
+    <name>Deliverable Issue Tracker</name>
+    <description>Issue tracker service using Spring and RESTful web services</description>
 
  	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,7 +43,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-				
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -58,7 +58,7 @@
 	      <artifactId>jjwt</artifactId>
 	      <version>0.9.0</version>
 	    </dependency>
-		
+
 		<!-- Mockito -->
 		<dependency>
 		    <groupId>org.mockito</groupId>

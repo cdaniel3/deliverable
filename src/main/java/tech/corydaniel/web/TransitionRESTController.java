@@ -1,4 +1,4 @@
-package com.deliverable.web;
+package tech.corydaniel.web;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliverable.model.Transition;
-import com.deliverable.service.TicketService;
+import tech.corydaniel.model.Transition;
+import tech.corydaniel.service.TicketService;
 
 @RestController
 @RequestMapping("/transitions")

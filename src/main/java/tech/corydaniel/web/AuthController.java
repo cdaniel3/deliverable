@@ -1,4 +1,4 @@
-package com.deliverable.web;
+package tech.corydaniel.web;
 
 import java.io.IOException;
 
@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliverable.exceptions.JwtServerException;
-import com.deliverable.model.User;
-import com.deliverable.repositories.UserRepository;
-import com.deliverable.security.JwtHeaderTokenExtractor;
-import com.deliverable.security.LoginRequest;
-import com.deliverable.service.JwtService;
+import tech.corydaniel.exceptions.JwtServerException;
+import tech.corydaniel.model.User;
+import tech.corydaniel.repositories.UserRepository;
+import tech.corydaniel.security.JwtHeaderTokenExtractor;
+import tech.corydaniel.security.LoginRequest;
+import tech.corydaniel.service.JwtService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

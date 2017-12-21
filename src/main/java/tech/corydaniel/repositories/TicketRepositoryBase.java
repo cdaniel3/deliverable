@@ -1,8 +1,8 @@
-package com.deliverable.repositories;
+package tech.corydaniel.repositories;
 
 import java.util.List;
 
-import com.deliverable.model.Transition;
+import tech.corydaniel.model.Transition;
 
 public interface TicketRepositoryBase {
 

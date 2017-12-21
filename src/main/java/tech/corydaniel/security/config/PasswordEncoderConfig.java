@@ -1,4 +1,4 @@
-package com.deliverable.security.config;
+package tech.corydaniel.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.deliverable.security;
+package tech.corydaniel.security;
 
 import java.io.IOException;
 import java.util.Date;
@@ -14,7 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import com.deliverable.web.RestError;
+import tech.corydaniel.web.RestError;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component

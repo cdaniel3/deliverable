@@ -1,4 +1,4 @@
-package com.deliverable.web;
+package tech.corydaniel.web;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliverable.exceptions.PriorityNotFoundException;
-import com.deliverable.model.Priority;
-import com.deliverable.repositories.PriorityRepository;
+import tech.corydaniel.exceptions.PriorityNotFoundException;
+import tech.corydaniel.model.Priority;
+import tech.corydaniel.repositories.PriorityRepository;
 
 @RestController
 @RequestMapping("/priorities")

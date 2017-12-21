@@ -1,4 +1,4 @@
-package com.deliverable.service;
+package tech.corydaniel.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -19,18 +19,18 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import com.deliverable.config.TicketConfiguration;
-import com.deliverable.exceptions.InvalidTicketException;
-import com.deliverable.exceptions.TicketNotFoundException;
-import com.deliverable.model.Priority;
-import com.deliverable.model.Status;
-import com.deliverable.model.Ticket;
-import com.deliverable.model.TicketType;
-import com.deliverable.model.User;
-import com.deliverable.repositories.PriorityRepository;
-import com.deliverable.repositories.StatusRepository;
-import com.deliverable.repositories.TicketRepository;
-import com.deliverable.security.AuthenticatedUserContext;
+import tech.corydaniel.config.TicketConfiguration;
+import tech.corydaniel.exceptions.InvalidTicketException;
+import tech.corydaniel.exceptions.TicketNotFoundException;
+import tech.corydaniel.model.Priority;
+import tech.corydaniel.model.Status;
+import tech.corydaniel.model.Ticket;
+import tech.corydaniel.model.TicketType;
+import tech.corydaniel.model.User;
+import tech.corydaniel.repositories.PriorityRepository;
+import tech.corydaniel.repositories.StatusRepository;
+import tech.corydaniel.repositories.TicketRepository;
+import tech.corydaniel.security.AuthenticatedUserContext;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TicketServiceImplTest {

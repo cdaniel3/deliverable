@@ -1,4 +1,4 @@
-package com.deliverable.config;
+package tech.corydaniel.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
