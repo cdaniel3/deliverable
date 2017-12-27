@@ -1,6 +1,5 @@
-drop database deliverable_db;
-
 create database deliverable_db;
+
 use deliverable_db;
 
 -- read only access
