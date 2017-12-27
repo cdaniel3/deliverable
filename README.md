@@ -17,7 +17,7 @@ An access token and refresh token will be generated and returned in the response
 
 `curl -v -X GET -H "Authorization: Bearer eyJhbGyJzdWIiOiJ1c2VyMSIsInNjb3BlcyI6W10sImlzcyI6Imlzc3VlcmNkIiwiZXhwIjoxNTEzODI4NDg5fQ.w44K-MY5o39nkgqMf0zj8JnuVoLT02T9aNHhdaGf1mypocm8nju4Owyx7at4y-g-cT0h9sZpROeWK3mPC97s1g" http://localhost:8080/tickets`
 
-##### Alternatively, to use a MySql database instead of H2:
+##### Optionally, to use a MySql database instead of H2:
 * In src/main/resources/application.properties:
   * Comment out the H2 datasource properties
   * Uncomment the MySql datasource properties
