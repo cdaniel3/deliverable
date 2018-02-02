@@ -1,8 +1,11 @@
 package tech.corydaniel.security.config;
 
+import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +18,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import tech.corydaniel.security.JwtHeaderTokenExtractor;
 import tech.corydaniel.security.JwtTokenAuthenticationProcessingFilter;
@@ -29,6 +35,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String AUTHENTICATION_URL = "/auth/login";
     public static final String REFRESH_TOKEN_URL = "/auth/token";
     public static final String API_ROOT_URL = "/**";
+    
+    @Value("${allowed.origins}")
+	private String[] allowedOrigins;
 
     @Autowired
     private AuthenticationFailureHandler failureHandler;
@@ -78,18 +87,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
     	log.trace("configure(HttpSecurity http)");
         http
+        	.cors()
+			.and()
             .csrf().disable()			// Disabling CSRF since Jwt is used for user operations
             .sessionManagement()
             	.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .authorizeRequests()
-                .antMatchers(AUTHENTICATION_URL, REFRESH_TOKEN_URL)
-                .permitAll()
-            .and()
-                .authorizeRequests()
-                .antMatchers(API_ROOT_URL)
-                .authenticated()
+                .antMatchers(AUTHENTICATION_URL, REFRESH_TOKEN_URL).permitAll()
+                .antMatchers(API_ROOT_URL).authenticated()
             .and()
                 .addFilterBefore(buildJwtTokenAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+    
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+    	CorsConfiguration configuration = new CorsConfiguration();
+		configuration.applyPermitDefaultValues();
+		configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));		
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
     }
 }
