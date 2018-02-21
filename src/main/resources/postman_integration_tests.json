@@ -1,0 +1,1031 @@
+{
+	"info": {
+		"name": "Deliverable RESTful api testing",
+		"_postman_id": "420cc525-56c1-8562-b304-07f35406a46e",
+		"description": "Integration tests for deliverable RESTful apis\nIncluding JWT authentication / authorization\nCreating, modifying, transitioning tickets",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login - Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f4462f81-58d3-4c77-b983-41ba3544c2de",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Admin login contains access token\"] = jsonData.accessToken;",
+							"postman.setEnvironmentVariable(\"adminAccessToken\", jsonData.accessToken);",
+							"tests[\"Admin login contains refresh token\"] = jsonData.refreshToken;",
+							"postman.setEnvironmentVariable(\"adminRefreshToken\", jsonData.refreshToken);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Requested-With",
+						"value": "XMLHttpRequest"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}"
+				},
+				"url": "http://localhost:8080/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Login user1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "edd4c565-72f1-4d8e-abca-2af32c396010",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Auth login contains access token\"] = jsonData.accessToken;",
+							"postman.setEnvironmentVariable(\"user1AccessToken\", jsonData.accessToken);",
+							"tests[\"Auth login contains refresh token\"] = jsonData.refreshToken;",
+							"postman.setEnvironmentVariable(\"user1RefreshToken\", jsonData.refreshToken);",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"user1\",\n    \"password\": \"password\"\n}"
+				},
+				"url": "http://localhost:8080/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Login user1 wrong username",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d59bd165-9a51-4117-9bfa-3a97bb4357d2",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Status code is 401\"] = pm.response.code === 401;",
+							"tests[\"Http status msg is 'Authentication failure'\"] = jsonData.message === 'Authentication failure';"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"aa\",\n    \"password\": \"wrongPassword\"\n}"
+				},
+				"url": "http://localhost:8080/auth/login",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Login user1 wrong password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5150bd6c-6357-42cc-bd2c-c46cadef6c40",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Status code is 401\"] = pm.response.code === 401;",
+							"tests[\"Http status msg is 'Authentication failure'\"] = jsonData.message === 'Authentication failure';"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"user1\",\n    \"password\": \"wrongPassword\"\n}"
+				},
+				"url": "http://localhost:8080/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Login user1 GET",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "487b3a89-036f-4c13-ba1d-cdbb5d9a5d7c",
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 405\"] = pm.response.code === 405;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"user1\",\n    \"password\": \"password\"\n}"
+				},
+				"url": "http://localhost:8080/auth/login",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4f57bbe9-9957-42a3-b31d-39b20a54df9f",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Response contains access token\"] = jsonData.accessToken;",
+							"postman.setEnvironmentVariable(\"user1AccessToken\", jsonData.accessToken);",
+							"tests[\"Response contains refresh token\"] = jsonData.refreshToken;",
+							"postman.setEnvironmentVariable(\"user1RefreshToken\", jsonData.refreshToken);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user1AccessToken}}"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/auth/token"
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "90f343c7-17e3-467b-b2ab-f03f68204cb4",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Multiple tickets returned\"] = jsonData.length > 1;",
+							"tests[\"Tickets contain 'id'\"] = jsonData[0].id",
+							"tests[\"Tickets contain 'name'\"] = jsonData[0].name",
+							"postman.setEnvironmentVariable(\"existingTicketId\", jsonData[0].id);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user1AccessToken}}"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets bad token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bc82ff83-3af5-450f-a772-aa142679e2b3",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Status code is 401\"] = pm.response.code === 401;",
+							"tests[\"Message is 'Invalid JWT token'\"] = jsonData.message === \"Invalid JWT token\";",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMSIsInNjb3BlcyI6W10sImlzcyI6Imlzc3VlcmNkIiwiZXhwIjoxNTEzMTQyOTg4fQ.adLoHZPWv87MR95Dk3rY8qVF9Qb6B5a4tZtMBteV-nxqvFqdwrFQrgfcChl3PB2LWVM8n80JHWSXMfotzaURsg"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets expired token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "322dd8ef-07b1-4ae2-8017-7bf8c441f0dd",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Status code is 401\"] = pm.response.code === 401;",
+							"tests[\"Message is 'JWT Token expired'\"] = jsonData.message === \"JWT Token expired\";",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlcyI6W10sImlzcyI6Imlzc3VlcmNkIiwiZXhwIjoxNTEzMTM3MTYyfQ.SC5TVCpNcFX_ervDvxdrRW78__-KwcSRTzsn0A9KXIP2-BWpYUAHpIkBAPRvTtZDNFhCeuxwo8i8ItdytIo25g"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets No auth header",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9f4a19c4-6217-4f46-96a8-e9b780ea52fa",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Status code is 401\"] = pm.response.code === 401;",
+							"tests[\"HTTP status msg is 'Authorization header required'\"] = jsonData.message === \"Authorization header required\";"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets"
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets Auth header wrong size",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3fb0753d-69b4-42bf-af57-ade76453fe0e",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Status code is 401\"] = pm.response.code === 401;",
+							"tests[\"HTTP response msg is 'Invalid authorization header size'\"] = jsonData.message === \"Invalid authorization header size\";"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearr"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets/{ticketId} Get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c3a370e1-4bcd-418a-b916-856dc06bd54e",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Ticket contains 'id'\"] = jsonData.id;",
+							"tests[\"Ticket contains 'name'\"] = jsonData.name;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user1AccessToken}}"
+					},
+					{
+						"key": "Origin",
+						"value": "http://localhost:4200"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets/{{existingTicketId}}",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets/1 Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0da072bf-a5e7-4bf9-a97b-e35ed3651a66",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user1AccessToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": {\n    \t\"id\": 3\n    }\n}"
+				},
+				"url": "http://localhost:8080/tickets/1",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/transitions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user1AccessToken}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/transitions?ticket-type=2&origin-status=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transitions"
+					],
+					"query": [
+						{
+							"key": "ticket-type",
+							"value": "2",
+							"equals": true
+						},
+						{
+							"key": "origin-status",
+							"value": "2",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets using Origin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "35c1f54e-3690-4857-9724-afa66a09ac71",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Multiple tickets returned\"] = jsonData.length > 1;",
+							"tests[\"Tickets contain 'id'\"] = jsonData[0].id",
+							"tests[\"Tickets contain 'name'\"] = jsonData[0].name"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user1AccessToken}}"
+					},
+					{
+						"key": "Origin",
+						"value": "http://localhost:4200"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets using bad Origin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0dbc2427-df0e-4509-b90c-3941629155e7",
+						"type": "text/javascript",
+						"exec": [
+							"// (All origins allowed)",
+							"// tests[\"Status code is 403\"] = pm.response.code === 403;",
+							"// tests[\"Invalid CORS request response\"] = responseBody === 'Invalid CORS request';",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user1AccessToken}}"
+					},
+					{
+						"key": "Origin",
+						"value": "http://badorigin.com"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /tickets/{ticketId}",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminAccessToken}}"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets/20",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets ADMIN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "35c1f54e-3690-4857-9724-afa66a09ac71",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Multiple tickets returned\"] = jsonData.length > 1;",
+							"tests[\"Tickets contain 'id'\"] = jsonData[0].id",
+							"tests[\"Tickets contain 'name'\"] = jsonData[0].name"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminAccessToken}}"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Empty data exc POC",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{adminAccessToken}}"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/transitions/emptyDataPOC",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Login alice",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "09a3f5e5-c590-4d82-91de-80eb429561bd",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Auth login contains access token\"] = jsonData.accessToken;",
+							"postman.setEnvironmentVariable(\"aliceAccessToken\", jsonData.accessToken);",
+							"",
+							"tests[\"Auth login contains refresh token\"] = jsonData.refreshToken;",
+							"postman.setEnvironmentVariable(\"aliceRefreshToken\", jsonData.refreshToken);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"alice\",\n    \"password\": \"password\"\n}"
+				},
+				"url": "http://localhost:8080/auth/login",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets/1 alice update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0da072bf-a5e7-4bf9-a97b-e35ed3651a66",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{aliceAccessToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"assignee\":{\n\t\"id\":\"7\"\t\n\t}\n}"
+				},
+				"url": "http://localhost:8080/tickets/1",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/tickets/{ticketId} Alice Get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d5b386c6-6c4d-4932-8816-e57029bf477b",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{aliceAccessToken}}"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets/10",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Unassign - DELETE /tickets/{ticketId}/assignee",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{aliceAccessToken}}"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets/1/assignee",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET /ticket-types",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "09c68193-81b7-42f9-85cd-c529918fb027",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Multiple ticket types returned\"] = jsonData.length > 1;",
+							"tests[\"Types contain 'id'\"] = jsonData[0].id",
+							"tests[\"Types contain 'name'\"] = jsonData[0].name"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user1AccessToken}}"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/ticket-types",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET /users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user1AccessToken}}"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/users",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "POST /tickets/2/comments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0da072bf-a5e7-4bf9-a97b-e35ed3651a66",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{aliceAccessToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "should this be closed?"
+				},
+				"url": "http://localhost:8080/tickets/2/comments",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "PUT /tickets/2/comments/17",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0da072bf-a5e7-4bf9-a97b-e35ed3651a66",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{aliceAccessToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "new comment"
+				},
+				"url": "http://localhost:8080/tickets/10",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "PUT update comment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2ded7355-5618-44b7-98e8-a2bdb9d87f69",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{user1AccessToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "Hey! This is user1's comment!!!!!!!!!"
+				},
+				"url": "http://localhost:8080/tickets/10/comments",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS /tickets",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e2f72816-2008-4261-be5e-b9be973962b7",
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = pm.response.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "OPTIONS",
+				"header": [
+					{
+						"key": "Host",
+						"value": "localhost:8080"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "Access-Control-Request-Method",
+						"value": "GET"
+					},
+					{
+						"key": "Origin",
+						"value": "http://localhost:4200"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
+					},
+					{
+						"key": "Access-Control-Request-Headers",
+						"value": "authorization"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-US,en;q=0.9"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS /auth/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c7ad7e5b-b570-4028-bc10-c20264bb64d5",
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = pm.response.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "OPTIONS",
+				"header": [
+					{
+						"key": "Access-Control-Request-Headers",
+						"value": "content-type"
+					},
+					{
+						"key": "Access-Control-Request-Method",
+						"value": "POST"
+					},
+					{
+						"key": "Origin",
+						"value": "http://localhost:4200"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/auth/login",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "OPTIONS /tickets Origin not allowed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "083c892e-2974-4403-b78d-a30ca383a791",
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 403\"] = pm.response.code === 403"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "OPTIONS",
+				"header": [
+					{
+						"key": "Access-Control-Request-Headers",
+						"value": "authorization"
+					},
+					{
+						"key": "Access-Control-Request-Method",
+						"value": "GET"
+					},
+					{
+						"key": "Origin",
+						"value": "http://example.com"
+					}
+				],
+				"body": {},
+				"url": "http://localhost:8080/tickets",
+				"description": ""
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "b2c4133a-54a9-4da5-8780-5225f8055297",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "1dc6df0b-1cc0-4dd2-8d4b-18158c54e89f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
