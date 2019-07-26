@@ -26,7 +26,6 @@ public class JwtTokenAuthenticationFailureHandler implements AuthenticationFailu
         this.mapper = mapper;
     }	
     
-	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException e) throws IOException, ServletException {
 		

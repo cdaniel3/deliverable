@@ -22,4 +22,4 @@ An access token and refresh token will be generated and returned in the response
   * Comment out the H2 datasource properties
   * Uncomment the MySql datasource properties
 * Run the below command to build the db schema and populate data:
-  * `cd src/main/resources/mysql && sudo mysql < all.sql`
+  * `cd src/main/resources/mysql && sudo  mysql -u root -h 127.0.0.1 -P 3306 -p < all.sql

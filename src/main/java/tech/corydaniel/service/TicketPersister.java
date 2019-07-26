@@ -2,6 +2,8 @@ package tech.corydaniel.service;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import tech.corydaniel.model.Priority;
 import tech.corydaniel.model.Ticket;
 import tech.corydaniel.model.User;
@@ -9,7 +11,9 @@ import tech.corydaniel.repositories.TicketRepository;
 
 public abstract class TicketPersister {
 	
+	@Autowired
 	private TicketRepository ticketRepository;
+	@Autowired
 	private EntityManager entityManager;
 
 	protected void populateTicket(Ticket sourceTicket, Ticket persistingTicket) {

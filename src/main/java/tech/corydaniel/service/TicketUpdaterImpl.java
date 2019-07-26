@@ -1,6 +1,7 @@
 package tech.corydaniel.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -26,10 +27,11 @@ public class TicketUpdaterImpl extends TicketPersister implements TicketUpdater 
 		if (sourceTicket == null) {
 			throw new InvalidTicketException("Ticket must not be null");
 		}
-		Ticket persistingTicket = getTicketRepository().findOne(sourceTicket.getId());
-		if (persistingTicket == null) {
+		Optional<Ticket> optionalTicket = getTicketRepository().findById(sourceTicket.getId());
+		if (optionalTicket.isEmpty()) {
 			throw new TicketNotFoundException("Ticket not found. Id: " + sourceTicket.getId());
 		}
+		Ticket persistingTicket = optionalTicket.get();
 		populateTicket(sourceTicket, persistingTicket);		
 		return getTicketRepository().save(persistingTicket);
 	}
@@ -43,10 +45,11 @@ public class TicketUpdaterImpl extends TicketPersister implements TicketUpdater 
 	}
 	
 	public Ticket updateTicketStatus(Long ticketId, Status newStatus) {
-		Ticket persistingTicket = getTicketRepository().findOne(ticketId);
-		if (persistingTicket == null) {
+		Optional<Ticket> optionalTicket = getTicketRepository().findById(ticketId);
+		if (optionalTicket.isEmpty()) {
 			throw new TicketNotFoundException("Ticket not found. Id: " + ticketId);
 		}
+		Ticket persistingTicket = optionalTicket.get();
 		updateStatus(persistingTicket, newStatus);
 		return getTicketRepository().save(persistingTicket);
 	}
