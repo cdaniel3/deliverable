@@ -33,7 +33,6 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
 		this.userRepository = userRepository;
 	}
 
-	@Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     	log.trace("authenticate(Authentication authentication()");
     	if (authentication == null) {
@@ -59,7 +58,6 @@ public class LoginAuthenticationProvider implements AuthenticationProvider {
         return new UsernamePasswordAuthenticationToken(username, null, user.getRoles());
     }
 
-    @Override
     public boolean supports(Class<?> authentication) {
         return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
     }

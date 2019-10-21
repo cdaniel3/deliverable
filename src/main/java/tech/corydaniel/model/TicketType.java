@@ -16,7 +16,7 @@ public class TicketType {
 
 	@Id
 	@Column(name="tickettype_id")
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 
 	@Column

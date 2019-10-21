@@ -21,18 +21,15 @@ public class TicketRepositoryImpl implements TicketRepositoryBase {
 			"from transition trans join status sdest on sdest.status_id = trans.dest_status " + 
 			"where trans.tickettype_id = ? and trans.origin_status = ?";
 
-	
-	@Override
 	public void updateTicketStatus(Long ticketId, Long statusId) {
 		if (ticketId != null && statusId != null) {
 			getJdbcTemplate().update("UPDATE TICKETS SET STATUS_ID = ? WHERE TICKET_ID = ?", statusId, ticketId);
 		}	
 	}
 	
-	@Override
 	public List<Transition> getTransitions(Long ticketTypeId, Long originStatusId) {
 		return getJdbcTemplate().query(SELECT_TRANSITIONS_SQL, new Object[]{ticketTypeId, originStatusId}, new RowMapper<Transition>() {
-			@Override
+			
 			public Transition mapRow(ResultSet rs, int rownum) throws SQLException {
 				int destStatusId = rs.getInt("dest_status");
 				String destStatusName = rs.getString("status_name");

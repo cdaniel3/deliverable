@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import tech.corydaniel.exceptions.TicketNotFoundException;
 import tech.corydaniel.model.Comment;
 import tech.corydaniel.model.Ticket;
 import tech.corydaniel.service.TicketService;
@@ -41,11 +40,7 @@ public class TicketRESTController {
 	
 	@GetMapping(value="/{ticketId}")
 	public Ticket getTicket(@PathVariable Long ticketId) {
-		Ticket ticket = getTicketService().getTicket(ticketId);
-		if (ticket == null) {
-			throw new TicketNotFoundException("Ticket not found. Id: " + ticketId);
-		}
-		return ticket;
+		return getTicketService().getTicket(ticketId);
 	}
 	
 	@PostMapping

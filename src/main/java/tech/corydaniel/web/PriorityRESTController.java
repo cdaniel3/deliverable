@@ -1,6 +1,7 @@
 package tech.corydaniel.web;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,9 +27,11 @@ public class PriorityRESTController {
 	
 	@RequestMapping(method=RequestMethod.GET, value="/{priorityId}")
 	public Priority getPriority(@PathVariable Long priorityId) {
-		Priority priority = getPriorityRepository().findOne(priorityId);
-		if (priority == null) throw new PriorityNotFoundException("Priority not found. Id: " + priorityId);
-		return priority;
+		Optional<Priority> optionalPriority = getPriorityRepository().findById(priorityId);
+		if (optionalPriority.isEmpty()) {
+			throw new PriorityNotFoundException("Priority not found. Id: " + priorityId);
+		}
+		return optionalPriority.get();
 	}
 
 	public PriorityRepository getPriorityRepository() {

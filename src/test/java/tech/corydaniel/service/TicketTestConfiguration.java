@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
@@ -139,7 +140,7 @@ public class TicketTestConfiguration {
 		existingTicket.setStatus(openStatus);
 		existingTicket.setAssignee(userAlice);
 		existingTicket.setDateCreated(new Date());
-		when(mockTicketRepository.findOne(mockExistingTicketId)).thenReturn(existingTicket);		
+		when(mockTicketRepository.findById(mockExistingTicketId)).thenReturn(Optional.of(existingTicket));		
 	}
 
 	public TicketType getBugType() {

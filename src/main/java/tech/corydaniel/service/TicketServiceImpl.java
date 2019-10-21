@@ -2,6 +2,7 @@ package tech.corydaniel.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,19 +57,21 @@ public class TicketServiceImpl implements TicketService {
 	private TicketUpdater ticketUpdater;
 
 	public Ticket getTicket(Long ticketId) {
-		return ticketRepository.findOne(ticketId);
+		Optional<Ticket> optionalTicket = ticketRepository.findById(ticketId);
+		if (optionalTicket.isEmpty()) {
+			throw new TicketNotFoundException("Ticket not found. Id: " + ticketId);
+		}
+		return optionalTicket.get();
 	}
 	
 	public List<Ticket> getUnresolvedTickets() {
 		return ticketRepository.findTicketByStatusValueNotOrderByPriorityWeightDescDateCreated("closed");
 	}
 	
-	@Override
 	public Ticket createTicket(Ticket requestedTicket) {
 		return ticketCreator.createTicket(requestedTicket);
 	}
 	
-	@Override
 	public Ticket updateTicket(Ticket requestedTicket) {
 		return ticketUpdater.updateTicket(requestedTicket);
 	}
@@ -76,29 +79,30 @@ public class TicketServiceImpl implements TicketService {
 	public Ticket updateTicketStatus(Long ticketId, Status newStatus) {
 		return ticketUpdater.updateTicketStatus(ticketId, newStatus);
 	}
-
-	@Override
+	
 	public Ticket unassignTicket(Long ticketId) {
 		if (ticketId == null) {
 			throw new InvalidTicketException("Ticket must not be null");
 		}
-		Ticket entityTicket = ticketRepository.findOne(ticketId);
-		if (entityTicket == null) {
+		Optional<Ticket> optionalTicket = ticketRepository.findById(ticketId);
+		if (optionalTicket.isEmpty()) {
 			throw new TicketNotFoundException("Ticket not found. Id: " + ticketId);
 		}
+		Ticket entityTicket = optionalTicket.get();
 		entityTicket.setAssignee(null);
 		return ticketRepository.save(entityTicket);
 	}
 
-	@Override
+	
 	public Ticket removePriority(Long ticketId) {
 		if (ticketId == null) {
 			throw new InvalidTicketException("Ticket must not be null");
 		}
-		Ticket entityTicket = ticketRepository.findOne(ticketId);
-		if (entityTicket == null) {
+		Optional<Ticket> optionalTicket = ticketRepository.findById(ticketId);
+		if (optionalTicket.isEmpty()) {
 			throw new TicketNotFoundException("Ticket not found. Id: " + ticketId);
 		}
+		Ticket entityTicket = optionalTicket.get();
 		Priority defaultPriority = priorityRepository.findPriorityByValue(getTicketConfiguration().getDefaultPriority());
 		if (defaultPriority != null) {
 			entityTicket.setPriority(defaultPriority);
@@ -109,21 +113,19 @@ public class TicketServiceImpl implements TicketService {
 
 		return ticketRepository.save(entityTicket);
 	}
-
-	@Override
+	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void removeTicket(Long ticketId) {
 		if (ticketId == null) {
 			throw new InvalidTicketException("Ticket must not be null");
 		}
-		ticketRepository.delete(ticketId);
+		ticketRepository.deleteById(ticketId);
 	}
 
 	public List<Transition> getTransitions(Long ticketTypeId, Long originStatusId) {
 		return ticketRepository.getTransitions(ticketTypeId, originStatusId);
 	}
 	
-	@Override
 	public Comment addComment(Long ticketId, String commentText) {
 		if (ticketId == null || StringUtils.isEmpty(commentText)) {
 			throw new InvalidTicketException("Ticket id and comment text are required when adding comment");
@@ -138,12 +140,12 @@ public class TicketServiceImpl implements TicketService {
 		return commentRepository.save(newComment);
 	}
 	
-	@Override
 	public Comment updateComment(Long commentId, String commentText) {
 		if (commentId == null || StringUtils.isEmpty(commentText)) {
 			throw new InvalidTicketException("Comment id and comment text are required when updating comment");
 		}
-		Comment comment = commentRepository.findOne(commentId);
+		// TODO handle NoSuchElementExc: write unit test
+		Comment comment = commentRepository.findById(commentId).get();
 		User commentAuthor = comment.getUser();
 		if (commentAuthor != null) {
 			String commentAuthorUsername = commentAuthor.getUsername();

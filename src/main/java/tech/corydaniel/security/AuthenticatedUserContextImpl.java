@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthenticatedUserContextImpl implements AuthenticatedUserContext {
 
-	@Override
 	public String getUsername() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof UserDetails) {

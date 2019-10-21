@@ -20,7 +20,7 @@ public class Role implements GrantedAuthority {
 
 	@Id
 	@Column(name="role_id")
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -38,7 +38,6 @@ public class Role implements GrantedAuthority {
 		this.roleName = roleName;
 	}
 	
-	@Override
 	public String getAuthority() {
 		return roleName;
 	}

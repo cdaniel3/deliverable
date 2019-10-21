@@ -31,7 +31,6 @@ public class SimpleJwtAuthProvider implements AuthenticationProvider {
 	}
 
     @SuppressWarnings("unchecked")
-	@Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     	log.trace("SimpleJwtAuthProvider authenticate(Authentication authentication)");
     	if (authentication == null) {
@@ -52,7 +51,6 @@ public class SimpleJwtAuthProvider implements AuthenticationProvider {
         return new SimpleJwtAuthToken(subject, token, authorities);
     }
 
-    @Override
     public boolean supports(Class<?> authentication) {
         return (SimpleJwtAuthToken.class.isAssignableFrom(authentication));
     }
